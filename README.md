@@ -7,6 +7,7 @@ HealthTourismHub is a platform that exploits the strengths of this ontology to o
 
 ## HT ontology
 
+**This ontology specifically includes individuals created exclusively for the HTH application, focusing on entities related to Greece. It includes medical and accommodation providers, as well as detailed location information and tourism activitied that are designed to support the application’s needs.**
 
 ### Using the Ontology
 
