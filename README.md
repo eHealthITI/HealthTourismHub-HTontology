@@ -31,3 +31,17 @@ HealthTourismHub is a platform that exploits the strengths of this ontology to o
 | Amenity | Amenities offered by accommodation providers entities |
 | Room | Room entities that are offered by accommodation providers |
 | AccommodationFeature | Categorizes a range of features within an accommodation |
+
+
+## Using the Ontology Handlers
+
+The `ontology_handlers` folder contains important resources and tools for working with the ontology.
+
+1. **sparql_queries.py**
+   - Includes code for connecting to the [AllegroGraph](https://franz.com/agraph/support/documentation/6.4.0/python/api.html) host.
+   - Contains SPARQL queries.
+   - These queries are executed using the AllegoGraph host.
+
+3. **add_to_ontology.py**
+   - Contains code for adding data from the app to the ontology via the AllegoGraph host.
+
