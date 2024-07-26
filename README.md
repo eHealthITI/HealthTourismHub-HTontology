@@ -19,6 +19,18 @@ HealthTourismHub is a platform that exploits the strengths of this ontology to o
 4. You may utilize a reasoner like HermiT to check for consistency and infer new knowledge based on the ontology's axioms and rules.
 
 
+### Main top-level classes
+
+| Class | Description |
+|---|---|
+| Provider | Categorizes entities that offer HT services |
+| MedicalSpecialty | Categorizes fields within medicine |
+| MedicalService | Categorizes medical treatments and procedures |
+| Activity | Actions or experiences during a travel |
+| Place | Categorizes a wide range of locations and landscapes |
+| Amenity | Amenities offered by accommodation providers entities |
+| Room | Room entities that are offered by accommodation providers |
+| AccommodationFeature | Categorizes a range of features within an accommodation |
 
 ### Using the Ontology Handlers
 
@@ -52,9 +64,8 @@ The `ontology_handlers` folder contains important resources and tools for workin
 docker-compose up --build
 ```
 
-### Citation Requirement
-
-**If you use the HT ontology in your work or project, please ensure to cite the following paper:**
+> [!IMPORTANT]  
+> If you use the HT ontology in your work or project, please ensure to cite the following paper:**
 
 [**Title**](link)
 
