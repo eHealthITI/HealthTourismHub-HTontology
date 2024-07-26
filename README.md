@@ -65,7 +65,5 @@ docker-compose up --build
 ```
 
 > [!IMPORTANT]  
-> If you use the HT ontology in your work or project, please ensure to cite the following paper:**
-
-[**Title**](link)
+> If you use the HT ontology in your work or project, please ensure to cite the following paper: [**Title**](link)
 
