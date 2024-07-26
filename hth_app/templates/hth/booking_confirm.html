@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+<!-- Include Manrope font -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+
+
+<body>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <i class="far fa-face-smile  mb-2 text-primary" style= "font-size:7em;" ></i>
+
+            <h1 class="fw-bold text-primary">Congratulations!</h1>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12 text-center">
+            <p class="lead">You successfully booked your health tourism package.</p>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12 text-center">
+            <p class="lead">See it <a href="{% url 'accounts:account_history' %}">here</a>. </p>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
+
+{% endblock %}

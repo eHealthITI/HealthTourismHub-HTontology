@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  health-tourism-hub:
+    build: .
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    # image: health-tourism-hub:django
+    container_name: health-tourism-hub
+    hostname: health-tourism-hub
+    command: python manage.py runserver 0.0.0.0:8000
+    links:
+      - 'agraph'  
+    restart: always
+  agraph:
+    image: franzinc/agraph
+    environment:
+        - AGRAPH_SUPER_USER= ${AGRAPH_SUPER_USER}
+        - AGRAPH_SUPER_PASSWORD= ${AGRAPH_SUPER_PASSWORD}
+    ports:
+        - 10035:10035
+    container_name: agraph-health-tourism-hub
+    shm_size: '1gb'
+    hostname: agraphhost
+    volumes:
+      - agdata:/agraph/data
+      - agconfig:/agraph/etc
+    restart: always
+volumes:
+  agdata:
+  agconfig:
+  static:

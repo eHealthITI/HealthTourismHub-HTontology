@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+    {% comment %} <h1 class="text-center"> Signup </h1>
+    <form class="site-form" method="post">
+        <div class="form-group col-md-6">
+            {% csrf_token %}
+            {{form.as_p}}
+            <input type="submit" value="Signup">
+        </div>
+    </form> {% endcomment %}
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+          <div class="col-11 col-sm-9 col-md-7 col-lg-6 col-xl-5 p-0 mt-3 mb-2 px-15">                                 
+                    <form class="p-4 p-md-5" method="post">
+                        <h3 class="text-center"> Welcome to HealthTourismHub</h3>
+                        <p class="text-secondary text-center"> Fill out the form to get started. </p>
+                        {% csrf_token %}
+                        
+                        <select class="form-select form-select-sm mb-3" aria-label=".form-select-sm example" name="type">
+                          <option value="user" selected>User</option>
+                          {% comment %} <option value="1">User</option> {% endcomment %}
+                          <option value="medexp">Medical Expert</option>
+                          <option value="accomm">Accommodation Provider</option>
+                        </select>
+                        <div class="row">
+                          <div class="col">
+                      
+                            <div class="form-floating mb-3">
+                              <input class="form-control" id="{{form.first_name.id_for_label}}" name="first_name" placeholder="name@example.com" required>
+                              <label for="{{form.first_name.id_for_label}}">{{form.first_name.label}}</label>
+                            </div>
+
+                          </div>
+
+                          <div class="col">
+                            <div class="form-floating mb-3">
+                              <input class="form-control" id="{{form.last_name.id_for_label}}" name="last_name" placeholder="name@example.com" required>
+                              <label for="{{form.last_name.id_for_label}}">{{form.last_name.label}}</label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                          <input class="form-control" id="{{form.email.id_for_label}}" name="email" placeholder="name@example.com" required>
+                          <label for="{{form.email.id_for_label}}">{{form.email.label}}</label>
+                        </div>
+
+                        {% comment %} <div class="form-floating mb-3">
+                            <input class="form-control" id="{{form.username.id_for_label}}" name="username" placeholder="name@example.com" required>
+                            <label for="{{form.username.id_for_label}}">{{form.username.label}}</label>
+                          </div> {% endcomment %}
+
+
+                        <div class="form-floating mb-3">
+                          <input type="password" class="form-control" id="{{form.password1.id_for_label}}" name="password1" placeholder="Password">
+                          <label for="{{form.password1.id_for_label}}">Password</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" id="{{form.password2.id_for_label}}" name="password2" placeholder="Password">
+                            <label for="{{form.password2.id_for_label}}">Confirm Password</label>
+                        </div>
+                        {% if form.errors %}
+                          {% for field in form %}
+                            {% for error in field.errors %}
+                              <p class="text-danger">{{ error| escape }}</p>
+                            {% endfor %}
+                          {% endfor %}
+                          {% for error in form.non_field_errors %}
+                            <p class="text-danger">{{ error | escape }}</p>
+                          {% endfor %}
+                        {% endif %}
+
+
+                        
+
+                        {% comment %} {% for field in form %}
+                         <div class="form-floating mb-3">
+                             <input
+                                 type="{{ field.field.widget.input_type }}"
+                                 class="form-control"
+                                 id="{{ field.id_for_label }}"
+                                 name="{{field.name}}"
+                                 placeholder="{{field.name}}"
+                                 required
+                             />
+                             <label for="{{field.id_for_label}}">{{field.label}}</label>
+                         </div>
+                         {% endfor %} {% endcomment %}
+
+
+                         <div class="checkbox mb-3">
+                            <label>
+                              <input type="checkbox" value="remember-me" > By submitting this form I have read and acknowledged the Privacy Policy
+                            </label>
+                          </div>
+
+                        <button class="w-100 btn btn-lg btn-primary" type="submit">Signup</button>
+
+                        <hr class="my-4">
+
+                         <!-- Register buttons -->
+                        <div class="text-center">
+                            <p>Already have an account? <a href="/login/">Login</a></p>
+                        </div>
+                      </form>
+
+                    
+            
+            </div>
+
+        </div>
+    </div>
+
+</html>
+
+{% endblock %}

@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+{% block content %} 
+
+<!DOCTYPE html>
+<html lang="en">
+    
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <style>
+        .circle-btn {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+            background-color: transparent; /* No background color */
+            border: none;
+            transition: background-color 0.3s; /* Smooth transition */
+          }
+      
+          .circle-btn:hover {
+            background-color: #edecfb; 
+          }
+      
+          .circle-btn span {
+            color: #999; 
+            transition: color 0.3s; 
+            font-weight:400;
+          }
+      
+        .circle-btn:hover span {
+            color: #5143d9; 
+          } 
+        .table-bordered td {
+            border: 1px solid #dee2e6;
+            height: 100px;
+            width: 100px;
+            
+         }
+
+        .booked-badge {
+            background-color: #E6F9E7;
+            color:#567758;
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+        hr {
+            border-top: 1px solid rgba(0, 0, 0, 0.2);
+        }
+    </style>
+
+
+    <div class="container display-8 py-5 my-3 lh-2 mb-3 align-items-start">
+
+        <p><a href="/">Home</a> - <a href="{% url 'accounts:account_settings' %}">Account</a> - Calendar</p>
+        <h2 class="lead text-secondary">Keep track of your appointments/bookings.</h2>
+        <br></br> 
+        <div class="h4 text-bold m-2 bg-transparent">
+            <i class="fa-regular fa-calendar"></i> <strong>Calendar</strong> &nbsp;
+            <span class="badge p-2" style="font-size: 20px; color: #5143d9; border-radius: 10px; background-color: #edecfb; font-weight: 450;"> {{ bookings|length }} bookings</span>
+
+        </div>
+        <hr>
+        <div class="mb-3 mt-4 m-2 row align-items-center">
+            <button class="col-12 col-sm-1 col-md-2 btn btn-outline-secondary mb-2 mb-sm-0" onclick="goToToday()">Today</button>
+            
+            <div class="col d-flex justify-content-middle">
+                <button class="circle-btn" onclick="prevMonth()">
+                    <span class="bi bi-chevron-left"></span>
+                </button>
+                <button class="circle-btn" onclick="nextMonth()">
+                    <span class="bi bi-chevron-right"></span>
+                </button>
+                <div class="ml-1 d-flex align-items-center month-name" style="font-size: 20px; font-weight: 600;" id="monthName"></div>
+            </div>
+        </div>
+        
+        
+        
+        <div style="overflow-x: auto;">
+            <table class="table table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th style="font-size:14px;font-weight:500;color:#97a4af;">SUN</th>
+                        <th style="font-size:14px;font-weight:500;color:#97a4af;">MON</th>
+                        <th style="font-size:14px;font-weight:500;color:#97a4af;">TUE</th>
+                        <th style="font-size:14px;font-weight:500;color:#97a4af;">WED</th>
+                        <th style="font-size:14px;font-weight:500;color:#97a4af;">THU</th>
+                        <th style="font-size:14px;font-weight:500;color:#97a4af;">FRI</th>
+                        <th style="font-size:14px;font-weight:500;color:#97a4af;">SAT</th>
+                    </tr>
+                </thead>
+                <tbody id="calendar-body">
+                </tbody>
+            </table>
+        </div>
+
+
+        <br></br> 
+        <div class="h4 text-bold m-2 bg-transparent">
+            <i class="fa-solid fa-clipboard-check"></i> <strong>Bookings</strong> 
+            <span class="badge p-2" style="font-size: 20px; color: #5143d9; border-radius: 10px; background-color: #edecfb; font-weight: 450;"> {{ bookings|length }} bookings</span>
+
+        </div>
+        <hr>
+        <div class="card mt-4">
+        
+            <div class="card-body overflow-x-scroll">
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>  
+                            {% if user.role == 2 %}
+                            <th scope="col" style="background-color:#F5F5F5;font-weight: 700;border-top-left-radius:10px;border-bottom-left-radius:10px;">#</th>
+                            <th scope="col" style="background-color:#F5F5F5;font-weight: 700;">Medical Service</th>
+                            <th scope="col" style="background-color:#F5F5F5;font-weight: 500;">Date</th>
+                            <th scope="col" style="background-color:#F5F5F5;font-weight: 500;">Patient name</th>
+                            <th scope="col" style="background-color:#F5F5F5;font-weight: 500;">Place</th>
+                            <th scope="col" style="background-color:#F5F5F5;font-weight: 500;border-top-right-radius:10px;border-bottom-right-radius:10px;" class="text-center">Action</th>
+
+                            {% elif user.role == 3 %}
+                            <th scope="col" style="background-color:#F5F5F5;font-weight: 700;border-top-left-radius:10px;border-bottom-left-radius:10px;">#</th>
+                            <th scope="col" style="background-color:#F5F5F5;font-weight: 700;">Room</th>
+                            <th scope="col" style="background-color:#F5F5F5;font-weight: 500;">People</th>
+                            <th scope="col" style="background-color:#F5F5F5;font-weight: 500;">Duration</th>
+                            <th scope="col" style="background-color:#F5F5F5;font-weight: 500;">Date</th>
+                            <th scope="col" style="background-color:#F5F5F5;font-weight: 500;">Patient name</th>
+                            <th scope="col" style="background-color:#F5F5F5;font-weight: 500;border-top-right-radius:10px;border-bottom-right-radius:10px;" class="text-center">Action</th>
+                            {% endif %}
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% comment %} {% for booking in bookings %} {% endcomment %}
+    
+                            <tr>
+                                {% if user.role == 2 %}
+                                {% for booking in bookings %}
+
+                                    <tr>
+                                        <td class="align-middle" style="font-weight:700;">{{ forloop.counter }}</td>
+                                        <td class="align-middle" style="font-weight:700;">{{booking.service}}</td>
+                                        <td class="align-middle">{{booking.date}} </td>
+                                        <td class="align-middle">{{booking.patient_first_name}} {{booking.patient_last_name}}</td>
+                                        <td class="align-middle">{{booking.destination}}</td>
+                                        <form method="post">
+                                            {% csrf_token %}      
+                                            <td class="text-center"> <button type="submit" class="btn btn-primary shadow btn-sm" style="width:80px;font-weight:500;" name="view" value="{{ booking.id }}"  formtarget="_blank">View</button></td>
+                                        </form>
+                                    </tr>
+                                {% endfor %}
+        
+                                {% elif user.role == 3 %}
+                                {% for booking in bookings %}
+                                    <tr>
+
+                                        <td class="align-middle" style="font-weight:700;">1</td>
+                                        <td class="align-middle"> {{booking.room}}</td>
+                                        <td class="align-middle">{{booking.people}}</td>
+                                        <td class="align-middle">{{booking.duration|add:1}} days</td>
+                                        <td class="align-middle">{{booking.date}}</td>
+                                        <td class="align-middle">{{booking.patient_first_name}} {{booking.patient_last_name}}</td>
+                                        <form method="post">
+                                            {% csrf_token %}      
+                                            <td class="text-center"> <button type="submit" class="btn btn-primary shadow btn-sm" style="width:80px;font-weight:500;" name="view" value="{{ booking.id }}"  formtarget="_blank">View</button></td>
+                                        </form>
+                                    </tr>
+                                {% endfor %}
+                                {% endif %}
+
+                            </tr>
+                        {% comment %} {% endfor %} {% endcomment %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        
+        let bookedDates = {{ booked_dates|safe }};
+
+        
+        let currentYear, currentMonth;
+    
+        // Function to generate the calendar
+        function generateCalendar(year, month) {
+            currentYear = year;
+            currentMonth = month;
+    
+            const today = new Date();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+    
+            const daysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay();
+    
+            document.getElementById('monthName').innerText = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(firstDay);
+    
+            const calendarBody = document.getElementById('calendar-body');
+            calendarBody.innerHTML = '';
+    
+            let date = 1;
+            for (let i = 0; i < 6; i++) {
+                const row = document.createElement('tr');
+                for (let j = 0; j < 7; j++) {
+                    if (i === 0 && j < startingDay) {
+                        const cell = document.createElement('td');
+                        const cellText = document.createTextNode('');
+                        cell.appendChild(cellText);
+                        row.appendChild(cell);
+                    } else if (date > daysInMonth) {
+                        break;
+                    } else {
+                        const cell = document.createElement('td');
+                        const cellText = document.createTextNode(date);
+    
+                        cell.appendChild(cellText);
+                        row.appendChild(cell);
+                        console.log(month);
+                        console.log(bookedDates.some(d => d.end_date === month));
+                       // Check for booked dates
+                       if (bookedDates.some(d => d.year === year && d.month === month && d.day === date)) {
+                        const bookedBadge = document.createElement('div');
+                        bookedBadge.classList.add('booked-badge');
+                        bookedBadge.innerText = 'booked';
+                        cell.appendChild(bookedBadge);
+                    }
+                        date++;
+                    }
+                }
+                calendarBody.appendChild(row);
+            }
+        }
+    
+        // Function to move to the previous month
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar(currentYear, currentMonth);
+        }
+    
+        // Function to move to the next month
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentYear, currentMonth);
+        }
+    
+        // Function to go to today's date
+        function goToToday() {
+            const today = new Date();
+            generateCalendar(today.getFullYear(), today.getMonth());
+        }
+    
+        // Initial calendar generation for the current month and year
+        const currentDate = new Date();
+        generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+    </script>
+<html>
+
+{% endblock %}

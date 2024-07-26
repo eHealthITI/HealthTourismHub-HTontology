@@ -1,0 +1,66 @@
+version: '3.8'
+
+networks:
+  data-net:
+    driver: bridge
+  http:
+    driver: bridge
+  backend:
+    driver: bridge
+
+services:
+  health-tourism-hub:
+    build: 
+      context: .
+      dockerfile: Dockerfile.prod
+    expose:
+      - 8000
+    command: gunicorn health_tourism_hub.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/home/app/health-tourism-hub/staticfiles
+      - media_volume:/home/app/health-tourism-hub/mediafiles
+    env_file:
+      - .env
+    container_name: health-tourism-hub
+    hostname: health-tourism-hub
+    links:
+      - 'agraph'  
+    networks:
+      - data-net
+      - http
+      - backend
+    restart: always
+  agraph:
+    image: franzinc/agraph
+    environment:
+        - AGRAPH_SUPER_USER= ${AGRAPH_SUPER_USER}
+        - AGRAPH_SUPER_PASSWORD= ${AGRAPH_SUPER_PASSWORD}
+    ports:
+        - 10035:10035
+    container_name: agraph-health-tourism-hub
+    shm_size: '1gb'
+    hostname: agraphhost
+    volumes:
+      - agdata:/agraph/data
+      - agconfig:/agraph/etc
+    networks:
+      - data-net
+    restart: always
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/home/app/health-tourism-hub/staticfiles
+      - media_volume:/home/app/health-tourism-hub/mediafiles
+      - /etc/letsencrypt:/cert
+    ports:
+      - 85:443
+      - 84:80
+    depends_on:
+      - health-tourism-hub
+    restart: always
+      
+volumes:
+  agdata:
+  agconfig:
+  static_volume:
+  media_volume:

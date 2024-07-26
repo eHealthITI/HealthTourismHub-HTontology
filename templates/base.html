@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load pwa %}
+
+<head>
+    {% progressive_web_app_meta %}
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/logo_cropped-femover.png">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+    <!-- Font awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+    <!-- Fonts-->
+    <link href='https://fonts.googleapis.com/css?family=Arima Madurai' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <title>{% block title %}Health Tourism Hub{% endblock %}</title>
+
+
+</head>
+  
+<body>
+
+    <!-- ======= Header ======= -->
+    <header id="header" class="header mx-4">
+        <div class="container-fluid">
+            <div class="d-flex flex-wrap align-items-center justify-content-center py-2 px-5 border-bottom">
+                <div class="col-xl-4 col-lg-6 col-md-12 d-flex justify-content-md-center justify-content-lg-start">
+                    <a href="/" class="d-flex text-dark text-decoration-none">
+                      <img src="/static/logo_cropped-femover.png" width="55" height="55" class="d-inline-block align-top" alt="hthlogo">
+                      <img src="/static/edklogo.png" alt="edklogo" width="349" height="55">
+                    </a>
+                  </div>
+
+                <div class="col-xl-5 col-lg-5 col-xxl-4 d-flex justify-content-xl-center justify-content-lg-start ps-5">
+                    <ul class="nav">
+                        <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
+                        <li><a href="#about" class="nav-link px-2 link-dark">About</a></li>
+                        {% if user.is_authenticated  %}
+                            {% if user.role == 1 %}
+                                <li><a href="/booking_form" class="nav-link px-2 link-dark">Discover</a></li>
+                            {% endif %}
+                            <li><a href="/account" class="nav-link px-2 link-dark">Account</a></li>
+                        {% else %}
+                            <li><a href="#partners" class="nav-link px-2 link-dark">Partners</a></li>
+                        {% endif %}
+
+                    </ul>
+                </div>
+
+                <div class="col-xl-3 col-xxl-4 col-lg-1 text-end pe-2 ps-2">
+                    {% if user.is_authenticated %}
+                        <a class="btn btn-outline-primary" type="button" href="/logout">Logout</a>
+                    {% else %}
+                        <a class="btn btn-outline-primary me-2" href="/login" role="button">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </header><!-- End Header -->
+ 
+    {% block content %}{% endblock %}
+
+</body>  
+
+
+</html>

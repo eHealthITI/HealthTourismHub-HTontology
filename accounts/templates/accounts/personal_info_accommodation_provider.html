@@ -1,0 +1,827 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/smart-selects/admin/js/chainedfk.js"></script>
+    <script src="/static/smart-selects/admin/js/bindfields.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<style>
+    .form-height {
+        height: 45px;
+    }
+    select {
+        padding: 8px 15px 8px 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 25px;
+        margin-top: 2px;
+        width: 100%;
+        box-sizing: border-box;
+        color: #2C3E50;
+        font-size: 16px;
+        background-color: inherit;
+    }
+    select option {
+        background-color: #fff; /* Set background color for options */
+        color: black; /* Set text color for options */
+        font-size: 16px; /* Set font size for options */
+    }
+    
+    .vertical-divider {
+        border-left: 1px solid  #dcdcdc;
+        height: 100%;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    hr {
+        border-top: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .custom-nav-link {
+        font-family: 'Roboto', sans-serif; 
+        font-size: 17px;
+        color: #6c757d; 
+        border-left: 3px solid transparent; /* Add a transparent border to all nav links on the left */
+        transition: border-left 0.3s; /* Add a smooth transition for the border */
+    }
+    .custom-nav-link.active {
+        font-weight: 550; 
+        color: #007bff; /* text-primary color */
+        border-left-color: #007bff; 
+    }
+    .custom-label {
+        font-size: 15px; 
+        font-weight:500;
+    }
+    .switch-container {
+        display: inline-block;
+        transform: scale(1.5); 
+    }
+    .custom-control.custom-switch {
+        text-align: right;
+    }
+    .full-width-card {
+        max-width: 100%; 
+    }
+    .card {
+        border-color: #ced4da;
+      }
+
+    .star-label {
+        display: inline-block;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    input:placeholder-shown {
+        font-style: italic;
+        color: red; 
+    }
+    .custom-range::-webkit-slider-runnable-track {
+        background-color: #dcdcdc; 
+      }
+    
+    .custom-range::-webkit-slider-thumb {
+        width: 20px;
+        height: 20px;    
+    }
+    {% comment %} .leaflet-container {
+        height: 400px;
+        width: 600px;
+        max-width: 100%;z
+        max-height: 100%;
+    } {% endcomment %}
+</style>
+
+<!-- Google Fonts -->
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+
+<div class="container py-5 my-3 lh-2 align-items-start">
+
+    <p><a href="/">Home</a> - <a href="{% url 'accounts:account_settings' %}">Account</a> - Information</p>
+    {% comment %} <h2 style="font-family: Roboto;">Personalized experience</h2> {% endcomment %}
+    <h2 class="lead text-secondary">Provide us with details about your accommodation. For best experience please fill in <strong>all</strong> the fields.</h2>
+    <br></br> 
+    <div class="container mt-2">
+        <div class="row">
+            <!-- Left Section -->
+            <div class="col-md-3">
+                <div class="text-center mb-3">
+                    <i class="fa fa-user-circle fa-4x mb-2" style="color: #FF5733;"></i>
+
+                    <h5>{{ existing_info.accommodation_name }}</h5>
+                    <p><em>Email:</em> {{email}} </p>
+                </div>
+                
+                <!-- Grouped Tabs -->
+                <ul class="nav flex-column">
+                    <li class="nav-item mt-4 ml-2">
+                        <h6 style="font-size: 14px;">GENERAL</h6>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-nav-link active" data-toggle="tab" href="#basic-content">
+                            <i class="fa fa-user fa-sm" style="margin-right: 15px;"></i>Basic info
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-nav-link" data-toggle="tab" href="#details-content">
+                            <i class="fa fa-heading fa-sm" style="margin-right: 15px;"></i>Details
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-nav-link" data-toggle="tab" href="#location-content">
+                            <i class="fa fa-location-dot fa-sm" style="margin-right: 15px;"></i>Location
+                        </a>
+                    </li>                 
+                    <li class="nav-item mt-2  ml-2">
+                        <h6 style="font-size: 14px;">ACCOMMODATION</h6>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-nav-link" data-toggle="tab" href="#amenities-content">
+                            <i class="fa fa-bell-concierge fa-sm" style="margin-right: 15px;"></i>Amenities
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-nav-link" data-toggle="tab" href="#type-content">
+                            <i class="fa fa-hotel fa-sm" style="margin-right: 15px;"></i>Type
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2  ml-2">
+                        <h6 style="font-size: 14px;">ROOMS</h6>
+                    </li>
+                    <li class="nav-item mb-4">
+                        <a class="nav-link custom-nav-link" data-toggle="tab" href="#room-content">
+                            <i class="fa fa-bed fa-sm" style="margin-right: 15px;"></i>Rooms info
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+    
+            <!-- Vertical Divider -->
+            <div class="col-md-1 d-none d-md-block">
+                <div class="vertical-divider"></div>
+            </div>
+    
+            <!-- Right Section (Content) -->
+            <div class="col-md-8">
+                <form method="post" class="tab-content" id="accommodation_provider-form">
+                        {% csrf_token %}
+                        <!-- Basic Content -->
+                        <div class="tab-pane fade show active" id="basic-content">
+                            <!-- Content for Basic section goes here -->
+                            <h2>General</h2>
+                            <h5 class='mt-3 mb-5 text-primary'>Basic info</h5>
+                            <br>
+                            <div class="form-group mt-2">
+                                <label>Accommodation Name</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control form-height" name="{{ form.accommodation_name.name }}" value="{{ form.accommodation_name.value }}">
+                                </div>                                   
+                            </div>
+                        
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>Phone number</label>
+                                        <input type="text" class="form-control form-height" name="{{ form.phone_number.name }}" value="{{ form.phone_number.value }}" placeholder="+30___ ___ __">
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="datepicker">Since</label>
+                                        <input type="text" class="form-control form-height" id="datepicker" name="{{ form.since.name }}" value="{{ form.since.value|date:'Y-m-d' }}" data-date-format="yyyy-mm-dd">
+
+                                        </div>
+                                </div>
+                            </div>
+                            <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                <button id="save-button1" type="submit" class="btn btn-primary mt-1 save-button" name="accommodation_provider_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                    Save changes
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Details Content -->
+                        <div class="tab-pane fade" id="details-content">
+                                <!-- Content for Details section goes here -->
+                                <h2>General</h2>
+                                <h5 class='mt-3 mb-5 text-primary'>Details</h5>
+                                <br>
+                                <div class="form-group mt-2">
+                                <label for="description">Description</label>
+                                <textarea class="form-control" id="description" name="{{form.description.name}}" rows="5" placeholder="Provide a description of your accommodation">{{ form.description.value }}</textarea>
+                                </div>
+                            <div class="form-group mt-2">
+                                <label class="mt-2" for="language">You provide communication in these languages</label>
+                                <div style="height:180px;" class="card w-100 container overflow-y-auto">
+                                    {% for value, text in form.languages_speaking.field.choices %}                                               
+                                        <div class="row mb-1 mt-1">
+                                            <div class="col-6">
+                                                <label class="form-check-label small d-flex justify-content-start" for="id_languages{{ forloop.counter0 }}">
+                                                    {{ text }}
+                                                </label>                                        
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-check form-switch text-center float-end">
+                                                    <input class="form-check-input" type="checkbox" id="id_languages{{ forloop.counter0 }}" name="{{ form.languages_speaking.name }}" value="{{ value }}" {% if value in form.languages_speaking.value %}checked{% endif %}>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>                              
+                            </div>
+
+                            <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                <button id="save-button2" type="submit" class="btn btn-primary mt-1 save-button" name="patient_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                    Save changes
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Location Content -->
+                        <div class="tab-pane fade" id="location-content">
+                                <h2>General</h2>
+                                <h5 class='mt-3 mb-5 text-primary'>Location</h5>
+
+                            <br>
+                            <div class="form-group mt-2">
+                                <label >Address</label>
+                                <div class="input-group">
+                                    <input type="text" id="address" class="form-control form-height" name="{{ form.address.name }}" value="{{ form.address.value }}" placeholder="eg Tsimiski 10">
+                                </div>                                   
+                            </div>
+                    
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>Postal code</label>
+                                        <input type="text" id="postal_code" class="form-control form-height" name="{{ form.postal_code.name }}" value="{{ form.postal_code.value }}" placeholder="eg 54634">
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="city">City/town</label>
+                                        <input type="text" class="form-control form-height" id="city" name="{{ form.city.name }}" value="{{ form.city.value}}">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mt-4">
+                                <label>Regional unit</label>
+                                <div class="input-group">
+                                    {{form.regional_unit}}
+                                </div>           
+                                                    
+                            </div>
+
+                            <br>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div id="map" style="width:100%; height: 300px;"></div>
+                                    
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info mt-4" role="alert">
+                                <p>Please ensure that the location on the map is accurate.</p>
+                                <hr style="border-color: #17a2b8;">
+                                <p class="lead mb-0" style="font-size:16px;"><i class="fa-regular fa-lg fa-circle-question"></i> Couldnt find your location? <strong>Tap to drop pin.</strong></P>
+                            </div>
+                            <div style="display: none;">
+                                <input type="text" id="coordinates" class="form-control form-height" name="{{ form.coordinates.name }}" value="{{ form.coordinates.value }}">
+                            </div>          
+
+                            <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                <button id="save-button3" type="submit" class="btn btn-primary mt-1 save-button" name="accommodation_provider_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                    Save changes
+                                </button>
+                            </div>
+                        
+                        </div>
+                        <!-- Amenities Content -->
+                        <div class="tab-pane fade" id="amenities-content">
+                            <h2>Accommodation</h2>
+                            <h5 class='mt-3 mb-4 text-primary'>Amenities</h5>
+                            <br></br>
+
+                            <P class="lead" style="font-size:16px;">Please provide information about the amenities your accommodation offers by selecting the relevant options using the radio switches below</P>
+
+                            <div class="row">
+
+                                {% for group_name, amenities in  group_amenities  %}
+                                <div class="container">
+                                    <h6 class="group-header" data-toggle="collapse" data-target="#{{ group_name|slugify }}">
+                                        <i style="font-style: italic;">{{ group_name }}</i>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </h6>
+                                    <hr>
+                                    <div id="{{ group_name|slugify }}" class="collapse show">
+
+                                        {% for value, text in amenities %}
+
+                                            <div class="form-group row">
+                                                <div class="col-md-8">
+                                                    <label for="{{ value }}" class="col-form-label">{{ text }}</label>
+                                                </div>
+                                                <div class="col-md-4 d-flex justify-content-end align-items-center">
+                                                    <div class="form-check form-switch">
+                                                        <div class="switch-container">
+                                                            <input type="checkbox" class="form-check-input" id="{{ value }}" name="{{ form.offering_amenities.name }}" value="{{ value }}" {% if value in existing_info.offering_amenities %} checked {% endif %}>
+                                                            <label class="custom-control-label" for="{{ value }}"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>                                                            
+                                            <hr class="my-3">
+                                        {% endfor %}
+                                    </div>
+
+                                    
+                                </div>
+                                {% endfor %}
+
+                            </div>
+
+
+                            <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                <button id="save-button4" type="submit" class="btn btn-primary mt-1 save-button" name="patient_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                    Save changes
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Type Content -->
+                        <div class="tab-pane fade" id="type-content">
+                            <h2>Accommodation</h2>
+                            <h5 class='mt-3 mb-5 text-primary'>Type</h5>
+                            <br>
+
+                            <div class="form-group mt-2">
+                                <label>Star rating</label>
+                                <P class="lead" style="font-size:16px;">Please provide information regarding the star rating of your accommodation, if applicable</P>
+
+                                <input type="range" name="{{ form.accommodation_stars.name }}" class="form-range custom-range" id="customRange" min="0" max="5" step="0.5" value="{{ form.accommodation_stars.value }}">
+                                
+                                <div class="d-flex flex-column">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="fw-bold text-muted" style="font-size:13px;">None</span>
+                                        <span class="lead d-none d-sm-inline" style="font-size:14px;">0.5</span>
+                                
+                                        <span class="fw-bold text-muted" style="font-size:13px;">1 star</span>
+                                        <span class="lead d-none d-sm-inline" style="font-size:14px;width:10px;">1.5</span>
+                                
+                                        <span class="fw-bold text-muted" style="font-size:13px;">2 stars</span>
+                                        <span class="lead d-none d-sm-inline" style="font-size:14px;width:10px;">2.5</span>
+                                
+                                        <span class="fw-bold text-muted" style="font-size:13px;">3 stars</span>
+                                        <span class="lead d-none d-sm-inline ml-1" style="font-size:14px;width:10px;">3.5</span>
+                                
+                                        <span class="fw-bold text-muted" style="font-size:13px;">4 stars</span>
+                                        <span class="lead d-none d-sm-inline" style="font-size:14px;width:10px;">4.5</span>
+                                
+                                        <span class="fw-bold text-muted" style="font-size:13px;">5 stars</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row d-flex align-items-center"> 
+                                <div class="form-group mt-4">
+                                    <label>Accommodation type</label>
+                                    <P class="lead" style="font-size:16px;">Please provide information about your accommodation type by selecting the relevant option using the radio switches below</P>
+                                    <br>
+                                    <div class="container">
+
+                                        {% for value, text in form.accommodation_type.field.choices %}
+                                            <div class="form-group row accommodation-group">
+                                                <div class='col-md-8'>
+                                                    <label class="row custom-label">{{text}}</label>                                                   
+                                                </div>
+                                                <div class="col-md-4 d-flex justify-content-end align-items-center">
+                                                    <div class="form-check form-switch">
+                                                        <div class="switch-container">
+                                                            <input type="checkbox" class="form-check-input" id="id_accommodation_type_{{ forloop.counter0 }}"  name="{{ form.accommodation_type.name }}" value="{{ value }}"{% if value in existing_info.accommodation_type %} checked {% endif %}>
+                                                            <label class="custom-control-label" for="id_accommodation_type_{{ forloop.counter0 }}"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>             
+                                            <hr class="my-3">
+                                        {% endfor %}    
+                                    </div>
+                                </div>
+                            </div>            
+
+                            <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                <button id="save-button5" type="submit" class="btn btn-primary mt-1 save-button" name="patient_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                    Save changes
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Room Content -->
+                        <div class="tab-pane fade" id="room-content">
+                            <h2>Rooms</h2>
+                            <h5 class='mt-3 mb-4 text-primary'>Rooms info</h5>
+                            <br></br>
+
+                            <P class="lead" style="font-size:16px;">Please provide information about the rooms your accommodation provides. If your accommodation is a single-room type (e.g. Appartment), add only one room.</P>
+
+                            {{ formset.management_form }}
+                            {% for form in formset.forms %}
+                                {% if forloop.revcounter > 25  %}
+                                    <h6 class="group-header"> 
+                                        <i style="font-style: italic;">Room {{ forloop.counter0|add:1 }} 
+                                        </i>
+                                    </h6>
+                                    <div class="form-group mt-4">
+                                        <div class="row input-group">
+                                            <label class="col" for="accommodation_provider-{{ forloop.counter0}}-price">Price per night</label>
+                                            <label class="col" for="accommodation_provider-{{ forloop.counter0}}-size">Size in sqft</label>
+                                            <label class="col" for="accommodation_provider-{{ forloop.counter0}}-sleeps_people">Sleeps people</label>
+                                        </div>                                   
+                                        <div class="input-group">
+                                            <input type="number" class="form-control form-height" name="accommodation_provider-{{ forloop.counter0}}-price" value="{{ form.price.value }}" step="0.01" id="id_accommodation_provider-{{ forloop.counter0}}-price">
+                                            <input type="number" class="form-control form-height" name="accommodation_provider-{{ forloop.counter0}}-size" value="{{ form.size.value }}" id="id_accommodation_provider-{{ forloop.counter0}}-size">
+                                            <input type="number" class="form-control form-height" name="accommodation_provider-{{ forloop.counter0}}-sleeps_people" value="{{ form.sleeps_people.value }}" id="id_accommodation_provider-{{ forloop.counter0}}-sleeps_people">
+                                        </div>                                   
+                                    </div>
+                                    <label class="mt-2" for="language">Offering room amenities</label>
+                                    <div style="height:180px;" class="card w-100 container overflow-y-auto">
+                                        {% for value, text in form.offering_room_amenities.field.choices %}          
+                                        
+                                            <div class="row mb-1 mt-1">
+                                                <div class="col-6">
+                                                    <label class="form-check-label small d-flex justify-content-start" for="id__accommodation_provider-{{ forloop.parentloop.counter0 }}-offering_room_amenities_{{ forloop.counter0 }}">
+                                                        {{ text }}
+                                                    </label>                                        
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="form-check form-switch text-end float-end">
+                                                        <input class="form-check-input" type="checkbox" id="id__accommodation_provider-{{ forloop.parentloop.counter0 }}-offering_room_amenities_{{ forloop.counter0 }}" name="accommodation_provider-{{ forloop.parentloop.counter0 }}-offering_room_amenities" value= "{{ value }}" {% if value in form.offering_room_amenities.value %}checked{% endif %}>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    {{ form.id }}   
+                                    <br>
+
+                                    <input type="checkbox" class="btn-check" name="accommodation_provider-{{ forloop.counter0}}-DELETE" id="id_accommodation_provider-{{ forloop.counter0}}-DELETE" autocomplete="off">
+                                    <label class="btn btn-outline-danger" style="font-size: 0.9rem;" for="id_accommodation_provider-{{ forloop.counter0}}-DELETE"> <i class="fas fa-trash-alt"></i> Check to delete</label>
+                                    <br></br>
+                                    <hr>
+
+                                {% endif %}
+                            {% endfor %}
+                            
+                            <button class="btn btn-outline-primary" type="button" style="border: none;" data-toggle="collapse" data-target="#collapseExample-25" aria-expanded="false" aria-controls="collapseExample">
+                                <i class="fa-solid fa-circle-plus fa-lg"></i> Add a room
+                            </button>    
+                            {% for form in formset.forms %}
+                                {% if forloop.revcounter <= 25  %}                                                       
+                                    <div class="collapse mt-4" id="collapseExample-{{ forloop.revcounter}}">
+                                        <h6 class="group-header"> 
+                                            <i style="font-style: italic;">Room {{ forloop.counter0|add:1 }} 
+                                            </i>
+                                        </h6>
+                                        <div class="form-group mt-4">
+                                            <div class="row input-group">
+                                                <label class="col" for="accommodation_provider-{{ forloop.counter0}}-price">Price per night</label>
+                                                <label class="col" for="accommodation_provider-{{ forloop.counter0}}-size">Size in sqft</label>
+                                                <label class="col" for="accommodation_provider-{{ forloop.counter0}}-sleeps_people">Sleeps people</label>
+                                            </div>                                   
+                                            <div class="input-group">
+                                                <input type="number" class="form-control form-height" name="accommodation_provider-{{ forloop.counter0}}-price" value="{{ form.price.value }}" step="0.01" id="id_accommodation_provider-{{ forloop.counter0}}-price">
+                                                <input type="number" class="form-control form-height" name="accommodation_provider-{{ forloop.counter0}}-size" value="{{ form.size.value }}" id="id_accommodation_provider-{{ forloop.counter0}}-size">
+                                                <input type="number" class="form-control form-height" name="accommodation_provider-{{ forloop.counter0}}-sleeps_people" value="{{ form.sleeps_people.value }}" id="id_accommodation_provider-{{ forloop.counter0}}-sleeps_people">
+                                            </div>                                   
+                                        </div>
+                                        <label class="mt-2" for="language">Offering room amenities</label>
+                                        <div style="height:180px;" class="card w-100 container overflow-y-auto">
+                                            {% for value, text in form.offering_room_amenities.field.choices %}          
+                                            
+                                                <div class="row mb-1 mt-1">
+                                                    <div class="col-6">
+                                                        <label class="form-check-label small d-flex justify-content-start" for="id__accommodation_provider-{{ forloop.parentloop.counter0 }}-offering_room_amenities_{{ forloop.counter0 }}">
+                                                            {{ text }}
+                                                        </label>                                        
+                                                    </div>
+                                                    <div class="col-6 ">
+                                                        <div class="form-check form-switch float-end">
+                                                            <input class="form-check-input" type="checkbox" id="id__accommodation_provider-{{ forloop.parentloop.counter0 }}-offering_room_amenities_{{ forloop.counter0 }}" name="accommodation_provider-{{ forloop.parentloop.counter0 }}-offering_room_amenities" value= "{{ value }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        
+                                        {{ form.id }}   
+
+                                        <input style="display: none;" type="checkbox" name="accommodation_provider-{{ forloop.counter0}}-DELETE" id="id_accommodation_provider-{{ forloop.counter0}}-DELETE">
+                                        
+                                        <br></br>
+                                        <hr>
+                                        {% if forloop.revcounter != 1  %}
+                                            <button class="btn btn-outline-primary" type="button" style="border: none;" data-toggle="collapse" data-target="#collapseExample-{{ forloop.revcounter|add:-1 }}" aria-expanded="false" aria-controls="collapseExample">
+                                                <i class="fa-solid fa-circle-plus fa-lg"></i> Add a room
+                                            </button> 
+                                        {% endif %}
+
+
+                                    </div>
+
+
+                                {% endif %}
+
+                            {% endfor %}
+                            
+                            <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                <button id="save-button6" type="submit" class="btn btn-primary mt-1 save-button" name="patient_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                    Save changes
+                                </button>
+                            </div>
+                        </div>
+                        
+                        
+                        <div id="errorMessages" class="d-flex align-items-end flex-column form-row h6 text-danger mt-3 px-4"></div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+   $(document).ready(function() {
+
+
+    // Listen for checkbox change
+        $('.accommodation-group input[type="checkbox"]').change(function () {
+            // checkbox is checked
+            if ($(this).prop('checked')) {
+                // Uncheck other checkboxes in the same group
+                $('.accommodation-group input[name="{{ form.accommodation_type.name }}"]').not(this).prop('checked', false);
+            }
+        });
+
+        
+
+        // validations
+        function checkIfValid() {
+            // get the active tab's Id
+            var activeTabId = $('.tab-pane.active').attr('id');
+
+            $('.validation-message').remove();
+
+            // for basic content
+            if (activeTabId === 'basic-content') {    
+                var accommodation_name = $('[name="accommodation_name"]').val();
+                if (accommodation_name.trim() === '') {
+                    $('#errorMessages').append('<div class="validation-message text-danger">Accommodation name is required</div>');
+                    return false; // validation fails
+                }    
+                var phone_number = $('[name="phone_number"]').val();
+                if (phone_number.trim() === '') {
+                    $('#errorMessages').append('<div class="validation-message text-danger">Phone number is required</div>');
+                    return false; // validation fails
+                }  
+            }
+            // for details content
+            if (activeTabId === 'details-content') {    
+                var description = $('#description').val();
+                console.log(description);
+                if (description.trim() === '') {
+                    $('#errorMessages').append('<div class="validation-message text-danger">Description is required</div>');
+                    return false; // validation fails
+                }    
+                
+            }
+            // for location content
+            if (activeTabId === 'location-content') {    
+                    var address = $('[name="address"]').val();
+                    if (address.trim() === '') {
+                        $('#errorMessages').append('<div class="validation-message text-danger">Address is required</div>');
+                        return false; // validation fails
+                    }  
+                    if (!/^[A-Z][a-zA-Z0-9\s]*\s\d+$/.test(address.trim())) {
+                        $('#errorMessages').append('<div class="validation-message text-danger">Please enter a valid address, eg Tsimiski 10  </div>');
+                        return false; // validation fails
+                    }  
+                    var postal_code = $('[name="postal_code"]').val();
+                    if (postal_code.trim() === '') {
+                        $('#errorMessages').append('<div class="validation-message text-danger">Postal code is required</div>');
+                        return false; // validation fails
+                    }  
+                    if (!/^\d{5}$/.test(postal_code.trim())) {
+                        $('#errorMessages').append('<div class="validation-message text-danger">Please enter a valid postal code</div>');
+                        return false; // validation fails
+                    }
+                    var city = $('[name="city"]').val();
+                    if (city.trim() === '') {
+                        $('#errorMessages').append('<div class="validation-message text-danger">City is required</div>');
+                        return false; // validation fails
+                    }  
+            }
+
+            return true;
+
+        }
+
+        // handle form 
+        $("#accommodation_provider-form").submit(function(e) {
+            e.preventDefault();
+            var $form = $(this); // Get the form
+    
+            var $saveButton = $form.find(".save-button");
+            var originalText = $saveButton.text();
+            
+            $("#errorMessages").empty();
+           
+            // Add a loading spinner
+            $saveButton.prop("disabled", true); 
+            $saveButton.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
+            
+            if (!checkIfValid()) {
+                $saveButton.prop("disabled", false);
+                $saveButton.text('Save changes');
+                $saveButton.css({ "background-color": "", "color": "" });
+                return; // validation fails
+            }
+
+            $.ajax({
+                url: $form.attr("action"),
+                type: $form.attr("method"),
+                data: $form.serialize(),
+                success: function(data) {
+                    console.log(data);
+                    if (data.success === true) {
+                        console.log("Data was successful");
+                        // change the button's text and color to indicate success
+                        $saveButton.text("Saved");
+                        $saveButton.css({"background-color": "green", "color": "white"});
+
+                        // revert after 3 seconds
+                        setTimeout(function() {
+                            $saveButton.prop("disabled", false); // enable button    
+                            $saveButton.text('Save changes');
+                            $saveButton.css({"background-color": "", "color": ""});
+                        }, 3000); 
+                    } else {
+                        // not successful
+                        console.log("Data was not successful");
+                        console.log(data.errors);
+            
+                        // Parse the errors string into a JavaScript object
+                        var errorsObject = JSON.parse(data.errors);
+            
+                        // Loop through the errors object and display error messages
+                        for (var fieldName in errorsObject) {
+                            if (errorsObject.hasOwnProperty(fieldName)) {
+                                var errorMessages = errorsObject[fieldName];
+            
+                                // Append each error message to the error message container
+                                for (var i = 0; i < errorMessages.length; i++) {
+                                    $("#errorMessages").append("<div class='error-message'>" + errorMessages[i].message + "</div>");
+                                }
+                            }
+                        }
+            
+                        // revert on error
+                        $saveButton.prop("disabled", false); 
+                        $saveButton.text('Save changes');
+                        $saveButton.css({"background-color": "", "color": ""});
+                    }
+                },
+            });
+            
+        });
+    
+        
+        $(".save-button").click(function() {
+            // submit the form when a button is clicked
+            $("#accommodation_provider-form").submit();
+        });
+
+        // Map handling 
+        const map = L.map('map')
+
+        // Set view to saved coordinates first
+        var coordinates = "{{ form.coordinates.value }}".split(",");
+        var Lat = parseFloat(coordinates[0]) || 0;
+        var Lon = parseFloat(coordinates[1]) || 0;
+        
+        reloadMap(Lat, Lon)
+       
+        // Event listeners for input fields -> user types address and postal code and map reloads
+        $('#address, #postal_code').on('input', function () {
+            locateOnMap();
+        });
+        
+        //  Event listeners for map click -> user clicks on map
+        map.on('click', onMapClick);
+
+        const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+
+        // Listen for tab activation events and refresh the map when a tab is shown (leaflet bug)
+        $('.nav.flex-column a[data-toggle="tab"]').on('click', function (e) {
+            const targetTab = $(e.target).attr('href'); // Get the href of the activated tab
+            if (targetTab === '#location-content') {
+                setInterval(function () {
+                    map.invalidateSize();
+                 }, 100);
+            }
+        
+        });
+
+        // Locate on map based on input
+        function locateOnMap() {
+            // get values from input fields
+            const address = $('#address').val();
+            const postalCode = $('#postal_code').val();
+            const location = `${address}, ${postalCode}`;
+
+            const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
+
+            // request to the Nominatim API
+            $.get(geocodeUrl, function (data) {                
+                if (data.length > 0) {
+                    // set view
+                    const newLat = parseFloat(data[0].lat);
+                    const newLon = parseFloat(data[0].lon);
+                    const newLocation = L.latLng(newLat, newLon);
+
+                    reloadMap(newLat, newLon);
+                  
+                } else {
+                    console.log('No results');
+                }
+            });
+        }
+        
+        function onMapClick(e) {
+            const clickedLat = e.latlng.lat.toFixed(10);;
+            const clickedLon = e.latlng.lng.toFixed(10);;
+
+            reloadMap(clickedLat, clickedLon);
+
+        }
+
+
+        // Reload map
+        function reloadMap(Lat, Lon) {
+
+            map.setView([Lat, Lon], 15.5);
+
+            // Clear existing map layers
+            map.eachLayer(function (layer) {
+                if (layer !== tiles) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            const newMarker = L.marker([Lat, Lon]).addTo(map);
+
+            // Save coords to model
+            const coordinatesField = document.getElementById('coordinates');
+            coordinatesField.value = Lat + ',' + Lon;
+
+            // Invalidate map
+            map.invalidateSize();
+        }
+    });
+
+
+</script>
+
+</html>
+
+{% endblock %}

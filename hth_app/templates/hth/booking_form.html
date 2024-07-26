@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <!-- Include Manrope font -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    .form-control::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color: #495057;
+      opacity: 1; /* Firefox */
+    }
+    body {
+      background-color: #f8f9fa;
+    }
+    .blue-bg {
+      background-color: #071957;
+      height: 300px;
+    }
+    .label-with-icon {
+      font-size: 1rem;
+      font-weight: 530;
+
+    }
+    .label-with-icon i {
+      font-size: 1.3rem;
+      color: rgba(97, 97, 209, 0.636);
+      margin-right: 4px;
+
+    }
+    .form-control-inline {
+    display: inline-block;
+    width: 100%;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid #bfbfbfdb;
+    padding: 3px;
+   }
+   select {
+    display: inline-block;
+    width: 100%;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid #bfbfbfdb;
+    padding: 7.5px;
+    transition: border-color 0.2s; /* Add smooth transition for the border color */
+  }
+  
+  select:focus {
+      border-color: #007bff; /* Change the border color to Bootstrap's primary blue when focused */
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Add a blue box shadow on focus */
+      outline: none; 
+  }
+
+  .card_hover:hover{
+      transform: translateY(-2px);
+    }
+   {% comment %} Autocomplete Part {% endcomment %}
+    .ui-autocomplete .ui-menu-item-bold {
+      font-weight: bold;
+    }
+    .ui-menu-item-info {
+      font-size: 12px;
+      color: #888;
+    }
+    .autocomplete-entry {
+      display: flex;
+      align-items: flex-start; /* Align items to the top */
+    }
+    .autocomplete-icon {
+      font-size: 24px; /* Adjust the size as needed */
+      margin-right: 10px;
+    }
+    .autocomplete-details {
+      display: flex;
+      flex-direction: column;
+    }
+    .ui-menu-item {
+    border-bottom: 1px solid #f0f0f0; /* Add a light divider */
+    {% comment %} padding-bottom: 5px; {% endcomment %}
+
+    }
+    .ui-menu-item:last-child {
+    border-bottom: none; /* Remove the bottom border for the last item */
+    }
+    .ui-menu-item .ui-state-active {
+        background-color: #edecfa ; 
+        color: black;
+        border: 1px solid #ced4da;
+        {% comment %} margin-bottom: -5px; /* Add negative margin to match padding of .ui-menu-item */
+        padding-bottom: 8px; /* Reset the padding */ {% endcomment %}
+    } 
+
+  </style>
+
+
+<div class="blue-bg text-center" style="position: relative; top:100%;">
+  <div class="text-center p-5">
+    <h2 class="fw-bold text-white mt-3" style="font-family: 'Roboto'">Book complete health packages.</h2>
+    <h2 class="lead" style="font-weight:200; font-family:'Manrope';color:#838cab;">Explore our fully feautured packages and live the best medical tourism experience.</h2>
+ </div>
+
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+          <div class="card" style="border-radius: 20px;">
+              <div class="card-body">
+                  <form method="post" novalidate>
+                    {% csrf_token %}
+                                
+                    {{ form.media.js }} 
+
+                    <div class="row mt-3 px-4">
+                      <div class="col-12 col-lg-6">
+                          <div class="d-flex justify-content-start">
+                              <label for="location" class="label-with-icon"><i class="fas fa-map-marker-alt"></i> Location</label>
+                          </div>
+                          <input type="text" id="location-input" name="destination" class="form-control form-control-inline" placeholder=" Type to search for cities, airports and more">                     
+                       </div>
+                      <div class="col-12 col-lg-3 col-md-6 mt-3 mt-lg-0">
+                          <div class="d-flex justify-content-start">
+                              <label for="check-in" class="label-with-icon"><i class="far fa-calendar-alt"></i>  Check in</label>
+                          </div>
+                          {{form.check_in_date}}
+                      </div>
+                      <div class="col-12 col-lg-3 col-md-6 mt-3 mt-lg-0">
+                          <div class="d-flex justify-content-start">
+                              <label for="check-out" class="label-with-icon"><i class="far fa-calendar-alt"></i>  Check out</label>
+                          </div>
+                          {{form.check_out_date}}
+                      </div>
+                    </div>
+                    <div class="row mt-4 px-4">
+                      <div class="col-12 col-lg-5">
+                          <div class="d-flex justify-content-start">
+                              <label for="{{ form.specialty.id_for_label }}" class="label-with-icon"><i class="fas fa-user-md"></i> Medical specialty</label>
+                          </div>
+                          {{ form.specialty}}
+                      </div>
+                      <div class="col-12 col-lg-5 mt-3 mt-lg-0">
+                          <div class="d-flex justify-content-start">
+                              <label for="{{ form.medical_service.id_for_label }}" class="label-with-icon"><i class="fas fa-heartbeat"></i> Medical service</label>
+                          </div>
+                          {{ form.medical_service }}
+                      </div>
+                      <div class="col-12 col-lg-2 mt-3 mt-lg-0">
+                        <button type="submit" class="btn btn-primary w-100" style="height: 100%;border-radius: 20px;font-size: 1.15rem; font-weight: 450;">Explore</button>
+                      </div>
+
+                    </div>
+                    <!-- Display errors at the end -->
+                    {% if form.errors %}
+                      {% for field, error_list in form.errors.items %}
+
+                          {% for error in error_list %}
+                            <p class="text-start form-row h6 text-danger mt-3 px-4">{{ error }}</p>
+                          {% endfor %}
+
+                      {% endfor %}
+                    {% endif %}
+                  </form>
+                </div>    
+          </div>
+       </div>
+   </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  $(document).ready(function() {
+
+    var locations = [
+        {% for location in locations %}
+        ["{{ location.0 }}", "{{ location.1 }}", "{{ location.2 }}"],
+        {% endfor %}
+      ];
+
+  
+    $("#location-input").autocomplete({
+      source: function(request, response) {
+        var term = request.term.toLowerCase();
+        var filteredLocations = locations.filter(function(location) {
+          return (
+            location[0].toLowerCase().includes(term) ||
+            location[1].toLowerCase().includes(term) ||
+            location[2].toLowerCase().includes(term)
+          );
+        });
+  
+        response(filteredLocations.slice(0, 5).map(function(location) {
+          var typeIcon = getIconForType(location[1]);
+          return {
+            value: location[0],
+            label: highlightMatchedText(location[0], term),
+            typeIcon: typeIcon,
+            info: location[2]
+          };
+        }));
+      },
+      focus: function(event, ui) {
+        event.preventDefault();
+      },
+      select: function(event, ui) {
+        $("#location-input").val(ui.item.value);
+        return false;
+      }
+    }).autocomplete("instance")._renderItem = function(ul, item) {
+      var listItem = $("<li>")
+        .append(
+          "<div class='autocomplete-entry'><span class='autocomplete-icon'>" + item.typeIcon + "</span>" +
+          "<div class='autocomplete-details'>" + "<div>" + item.label + "</div>"  +
+          "<div class='ui-menu-item-info'>" + item.info + "</div></div></div>"
+        )
+        .appendTo(ul);
+      return listItem;
+    };
+  
+    function highlightMatchedText(text, term) {
+      var startIndex = text.toLowerCase().indexOf(term.toLowerCase());
+      if (startIndex !== -1) {
+        var beforeMatch = text.substring(0, startIndex);
+        var matchedText = text.substring(startIndex, startIndex + term.length);
+        var afterMatch = text.substring(startIndex + term.length);
+  
+        return beforeMatch + '<span class="ui-menu-item-bold">' + matchedText + '</span>' + afterMatch;
+      } else {
+        return text;
+      }
+    }
+  
+    function getIconForType(type) {
+      var iconClass = '';
+      switch (type) {
+        case 'Location':
+          iconClass = 'fas fa-map-marker-alt';
+          break;
+        case 'Point of interest':
+          iconClass = 'fas fa-landmark fa-xs';
+          break;
+          case 'Airport':
+          iconClass = 'fas fa-plane fa-xs';
+          break;
+          case 'Medical institution':
+          iconClass = 'fas fa-house-medical fa-xs';
+          break;
+          case 'Landscape':
+          iconClass = 'fas fa-mountain-sun fa-xs';
+          break;
+        // Add more cases as needed
+        default:
+          iconClass = 'fas fa-map-marker-alt';
+      }
+      return '<i class="' + iconClass + '"></i>';
+    }
+  });
+  </script>
+</html>
+{% endblock %}
+
+

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %} 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
+
+</head>
+
+<div class="container py-5 my-3 lh-2 align-items-start" >
+
+    <p><a href="/">Home</a> - <a href="{% url 'accounts:account_settings' %}">Account</a> - History</p>
+    <h2 class="lead text-secondary">Keep track of your bookings.</h2>
+    <br></br> 
+    <div class="h4 text-bold m-2 bg-transparent">
+        <i class="fa-solid fa-clipboard-check"></i> <strong>Bookings</strong> 
+    </div>
+    <div class="card mt-4">
+        <div class="card-header bg-transparent">
+            <span class="badge p-2" style="font-size: 20px; color: #5143d9; border-radius: 10px; background-color: #edecfb; font-weight: 450;"> {{ bookings|length }} bookings</span>
+
+        </div>
+        <div class="card-body overflow-x-scroll  ">
+            <table class="table table-borderless">
+                <thead>
+                    <tr >
+                        <th scope="col" style="background-color:#F5F5F5;font-weight: 700;border-top-left-radius:10px;border-bottom-left-radius:10px;">#</th>
+                        <th scope="col" style="background-color:#F5F5F5;font-weight: 700;">Service</th>
+                        <th scope="col" style="background-color:#F5F5F5;font-weight: 500;">Destination</th>
+                        <th scope="col" style="background-color:#F5F5F5;font-weight: 500;">Duration</th>
+                        <th scope="col" style="background-color:#F5F5F5;font-weight: 500;">Date</th>
+                        <th scope="col" style="background-color:#F5F5F5;font-weight: 500;border-top-right-radius:10px;border-bottom-right-radius:10px;" class="text-center">Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+
+                        <tr>
+                            <td class="align-middle" style="font-weight:700;">{{ forloop.counter }}</td>
+                            <td class="align-middle" style="font-weight:700;">{{booking.service}}</td>
+                            <td class="align-middle">{{booking.destination}} </td>
+                            <td class="align-middle">{{booking.duration|add:1}} days</td>
+                            <td class="align-middle">{{booking.date}}</td>
+                            <form method="post">
+                                {% csrf_token %}      
+                                <td class="text-center"> <button type="submit" class="btn btn-primary shadow btn-sm" style="width:80px;font-weight:500;" name="view" value="{{ booking.id }}"  formtarget="_blank">View</button></td>
+                            </form>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<html>
+
+{% endblock %}

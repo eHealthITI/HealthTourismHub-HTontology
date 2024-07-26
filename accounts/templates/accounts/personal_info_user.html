@@ -1,0 +1,768 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/smart-selects/admin/js/chainedfk.js"></script>
+    <script src="/static/smart-selects/admin/js/bindfields.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+
+<style>
+    .form-height {
+        height: 45px;
+    }
+    select {
+        padding: 8px 15px 8px 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 25px;
+        margin-top: 2px;
+        width: 100%;
+        box-sizing: border-box;
+        color: #2C3E50;
+        font-size: 16px;
+        background-color: inherit;
+    }
+    select option {
+        background-color: #fff; /* Set background color for options */
+        color: black; /* Set text color for options */
+        font-size: 16px; /* Set font size for options */
+    }
+    
+    .vertical-divider {
+        border-left: 1px solid  #dcdcdc;
+        height: 100%;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    hr {
+        border-top: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .custom-nav-link {
+        font-family: 'Roboto', sans-serif; 
+        font-size: 17px;
+        color: #6c757d; 
+        border-left: 3px solid transparent; /* Add a transparent border to all nav links on the left */
+        transition: border-left 0.3s; /* Add a smooth transition for the border */
+    }
+    .custom-nav-link.active {
+        font-weight: 550; 
+        color: #007bff; /* text-primary color */
+        border-left-color: #007bff; 
+    }
+    .custom-label {
+        font-size: 15px; 
+        font-weight:500;
+    }
+    .switch-container {
+        display: inline-block;
+        transform: scale(1.65); 
+    }
+    .custom-control.custom-switch {
+        text-align: right;
+    }
+    .full-width-card {
+        max-width: 100%; 
+    }
+    
+</style>
+
+<!-- Google Fonts -->
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+
+
+<div class="container py-5 my-3 lh-2 align-items-start">
+
+    <p><a href="/">Home</a> - <a href="{% url 'accounts:account_settings' %}">Account</a> - Personalized experience</p>
+    {% comment %} <h2 style="font-family: Roboto;">Personalized experience</h2> {% endcomment %}
+    <h2 class="lead text-secondary">Enhance your experience by adding some personal info.</h2>
+    <br></br> 
+    <div class="container mt-2">
+        <div class="row">
+            <!-- Left Section -->
+            <div class="col-md-3">
+                <div class="text-center mb-3">
+                    <i class="fa fa-user-circle fa-4x mb-2" style="color: #FF5733;"></i>
+
+                    <h5>{{ existing_info.first_name }} {{ existing_info.last_name }}</h5>
+                    <p><em>Email:</em> {{email}} </p>
+                </div>
+                
+                <!-- Grouped Tabs -->
+                <ul class="nav flex-column">
+                    <li class="nav-item mt-4 ml-2">
+                        <h6 style="font-size: 14px;">GENERAL</h6>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-nav-link active" id="basic-tab" data-toggle="tab" href="#basic-content">
+                            <i class="fa fa-user fa-sm" style="margin-right: 15px;"></i>Basic info
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2 ml-2">
+                        <h6 style="font-size: 14px;">TRAVELLING</h6>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-nav-link" id="activities-tab" data-toggle="tab" href="#activities-content">
+                            <i class="fa fa-person-walking" style="margin-right: 15px;"></i>Activities
+                        </a>                        
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-nav-link" id="eating-tab" data-toggle="tab" href="#eating-content">
+                            <i class="fa fa-utensils fa-sm" style="margin-right: 15px;"></i>Eating
+                        </a>                        
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-nav-link" id="landscape-tab" data-toggle="tab" href="#landscape-content">
+                            <i class="fa fa-mountain fa-sm" style="margin-right: 15px;"></i>Landscape
+                        </a>                        
+                    </li>
+                    <li class="nav-item mt-2  ml-2">
+                        <h6 style="font-size: 14px;">ACCOMMODATION</h6>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-nav-link" id="amenities-tab" data-toggle="tab" href="#amenities-content">
+                            <i class="fa fa-bell-concierge fa-sm" style="margin-right: 15px;"></i>Amenities
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-nav-link" id="type-tab" data-toggle="tab" href="#type-content">
+                            <i class="fa fa-hotel fa-sm" style="margin-right: 15px;"></i>Type
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-nav-link" id="choices-tab" data-toggle="tab" href="#choices-content">
+                            <i class="fa fa-star fa-sm" style="margin-right: 15px;"></i>Special choices
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2  ml-2">
+                        <h6 style="font-size: 14px;">MEDICAL</h6>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-nav-link" id="medical-tab" data-toggle="tab" href="#medical-content">
+                            <i class="fa fa-heart-pulse" style="margin-right: 15px;"></i>Medical info
+                        </a>
+                    </li>
+                </ul>
+            </div>
+    
+            <!-- Vertical Divider -->
+            <div class="col-md-1 d-none d-md-block">
+                <div class="vertical-divider"></div>
+            </div>
+    
+            <!-- Right Section (Content) -->
+            <div class="col-md-8">
+                <form method="post" class="tab-content" id="patient-form">
+                        {% csrf_token %}
+                        <!-- Basic Content -->
+                        <div class="tab-pane fade show active" id="basic-content">
+                            <!-- Content for Basic section goes here -->
+                            <h2>General</h2>
+                            <h5 class='mt-3 mb-5 text-primary'>Basic info</h5>
+
+                            <div class="row d-flex align-items-center"> 
+
+                                    <div class="form-group mt-4">
+                                        <label >Full Name</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control form-height" name="{{ form.first_name.name }}" value="{{ form.first_name.value }}">
+                                            <input type="text" class="form-control form-height" name="{{ form.last_name.name }}" value="{{ form.last_name.value }}">
+                                        </div>                                   
+                                    </div>
+                            </div>
+                        
+                            <div class="row mt-4">
+                                <div class="form-group">
+                                    <label>Gender</label>
+                                    <div class="input-group">
+                                        <div class="input-group">
+                                            <!-- Radio Check - Male -->
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.gender.id_for_label }}_1">
+                                                <span class="form-check">
+                                                    <input type="radio" class="form-check-input" name="{{ form.gender.name }}" id="{{ form.gender.id_for_label }}_1" value="Male" {% if form.gender.value == 'Male' %}checked{% endif %}>
+                                                    <span class="form-check-label">Male</span>
+                                                </span>
+                                            </label>
+                                        
+                                            <!-- Radio Check - Female -->
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.gender.id_for_label }}_2">
+                                                <span class="form-check ">
+                                                    <input type="radio" class="form-check-input" name="{{ form.gender.name }}" id="{{ form.gender.id_for_label }}_2" value="Female" {% if form.gender.value == 'Female' %}checked{% endif %}>
+                                                    <span class="form-check-label ">Female</span>
+                                                </span>
+                                            </label>
+                                        
+                                            <!-- Radio Check - Other -->
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.gender.id_for_label }}_3">
+                                                <span class="form-check">
+                                                    <input type="radio" class="form-check-input" name="{{ form.gender.name }}" id="{{ form.gender.id_for_label }}_3" value="Other" {% if form.gender.value == 'Other' %}checked{% endif %}>
+                                                    <span class="form-check-label">Other</span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>                         
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>Phone number</label>
+                                        <input type="text" class="form-control form-height" name="{{ form.phone_number.name }}" value="{{ form.phone_number.value }}" placeholder="+30___ ___ __">
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="datepicker">Birth date</label>
+                                        <input type="text" class="form-control form-height" id="datepicker" name="{{ form.birth_date.name }}" value="{{ form.birth_date.value|date:'Y-m-d' }}" data-date-format="yyyy-mm-dd">
+
+                                        </div>
+                                </div>
+                            </div>
+                            <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                <button id="save-button1" type="submit" class="btn btn-primary mt-1 save-button" name="patient_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                    Save changes
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Activities Content -->
+                        <div class="tab-pane fade" id="activities-content">
+                            <!-- Content for Interests section goes here -->
+                            <h2>Travelling</h2>
+                            <h5 class='mt-3 mb-5 text-primary'>Activities</h5>
+                            <br></br>
+                            <div class="container">
+
+                                {% for value, text in form.activity.field.choices %}
+
+                                <div class="form-group row">
+                                    <div class="col-8">
+                                        <label class="row custom-label">{{text}}</label>
+                                        <label class="row text-muted">
+                                            {% if text == 'Cultural activities' %}
+                                                Visit art galleries, museums and cultural venues
+                                            {% elif text == 'Family-friendly activities' %}
+                                                Visit water and amusement parks, zoos and other
+                                            {% elif text == 'Food and wine' %}
+                                                Visit restaurants, bars and wineries
+                                            {% elif text == 'Fun and games' %}
+                                                Visit fun parks 
+                                            {% elif text == 'Historical activities' %}
+                                                Visit monuments, castles, churches and historic sites
+                                            {% elif text == 'Local activities' %}
+                                                Visit local attractions and landmarks
+                                            {% elif text == 'Nature activities' %}
+                                                Visit national parks
+                                            {% elif text == 'Nightlife' %}
+                                                Explore the city's bars, pubs and casinos
+                                            {% elif text == 'Shopping' %}
+                                                Visit shopping districts and malls
+                                            {% elif text == 'Tour' %}
+                                                Tour through the city
+                                            {% elif text == 'Wellness activities' %}
+                                                Visit spas and wellness centers
+                                            {% endif %}
+                                        </label>
+                                    </div>
+
+                                    <div class="col-4 d-flex justify-content-end align-items-center">
+                                        <div class="form-check form-switch">
+                                            <div class="switch-container">
+                                                <input type="checkbox" class="form-check-input" id="id_activity_{{ forloop.counter0 }}"  name="{{ form.activity.name }}"value="{{ value }}"{% if value in existing_info.activity %} checked {% endif %}>
+                                                <label class="custom-control-label" for="id_activity_{{ forloop.counter0 }}"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>            
+                                    
+                                <hr class="my-3">
+                                {% endfor %}
+                                <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                    <button id="save-button2" type="submit" class="btn btn-primary mt-1 save-button" name="patient_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                        Save changes
+                                    </button>
+                                </div>
+                            </div>            
+
+                        </div>
+                        
+                        <!-- Eating Content -->
+                        <div class="tab-pane fade" id="eating-content">
+                            
+                            <!-- Content for Activities section goes here -->
+                            <h2>Travelling</h2>
+                            <h5 class='mt-3 mb-5 text-primary'>Eating</h5>
+                            <br></br>
+                            <div class="container">
+
+                                {% for value, text in form.cousine_preferencies.field.choices %}
+                                <div class="form-group row">
+                                    <div class="col-8">
+                                        <label class="row custom-label">{{text}}</label>
+                                        <label class="row text-muted">
+                                            {% if text == 'Diabetic diet' %}
+                                            Explore diabetes-friendly cooking and meals
+                                            {% elif text == 'Ethnic cousine' %}
+                                                Explore diverse ethnic cuisines and dining experiences
+                                            {% elif text == 'Gluten free' %}
+                                                Enjoy gluten-free dining options
+                                            {% elif text == 'Lactose free' %}
+                                                Explore lactose-free dining and dairy-free alternatives
+                                            {% elif text == 'Local cousine' %}
+                                                Try the regional flavors and dishes of the area
+                                            {% elif text == 'Organic' %}
+                                                Taste organic meals from natural sources
+                                            {% elif text == 'Street food' %}
+                                                Try local street eats and flavors
+                                            {% elif text == 'Vegan' %}
+                                                Explore vegan dining with plant-based options
+                                            {% elif text == 'Vegeterian' %}
+                                                Visit vegetarian food establishments with meat-free choices
+                                            {% elif text == 'Fine dining' %}
+                                                Experience gourmet dining with upscale cuisine
+                                            {% endif %}
+                                        </label>
+                                    </div>
+
+                                    <div class="col-4 d-flex justify-content-end align-items-center">
+                                        <div class="form-check form-switch">
+                                            <div class="switch-container">
+                                                <input type="checkbox" class="form-check-input" id="id_cousine_preferencies_{{ forloop.counter0 }}"  name="{{ form.cousine_preferencies.name }}"value="{{ value }}"{% if value in existing_info.cousine_preferencies %} checked {% endif %}>
+                                                <label class="custom-control-label" for="id_cousine_preferencies_{{ forloop.counter0 }}"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>            
+                                    
+                                <hr class="my-3">
+                                {% endfor %}
+                                <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                    <button id="save-button3" type="submit" class="btn btn-primary mt-1 save-button" name="patient_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                        Save changes
+                                    </button>
+                                </div>                             
+                            </div>
+
+                        </div>
+                        
+                        <!-- Landscape Content -->
+                        <div class="tab-pane fade" id="landscape-content">
+                            <!-- Content for Landscape section goes here -->
+                            <h2>Travelling</h2>
+                            <h5 class='mt-3 mb-5 text-primary'>Landscape</h5>
+                            <br></br>
+                            {% for value, text in form.landscape.field.choices %}
+                            <div class="container">
+
+                                <div class="form-group row">
+
+                                <div class="col-8">
+                                    <label class="row custom-label">{{text}}</label>
+                                    <label class="row text-muted">
+                                        {% if text == 'Beach' %}
+                                            Visit a beach setting
+                                        {% elif text == 'City center area' %}
+                                            Explore the city center
+                                        {% elif text == 'Coastal area' %}
+                                            Visit the scenic coastal region
+                                        {% elif text == 'Countryside area' %}
+                                            Experience the countryside
+                                        {% elif text == 'Historic area' %}
+                                            Discover the charm of the historic district
+                                        {% elif text == 'Island' %}
+                                            Visit an island destination
+                                        {% elif text == 'Inland waters' %}
+                                            Discover inland waterscapes
+                                        {% elif text == 'Mountain area' %}
+                                            Explore the scenic mountain terrain
+                                        {% elif text == 'Rural area' %}
+                                            Discover a peaceful rural area
+                                        {% elif text == 'Urban area' %}
+                                            Explore the vibrant cityscape
+                                        {% elif text == 'Village' %}
+                                            Visit a village destination
+                                        {% endif %}
+                                    </label>
+                                </div>
+
+                                <div class="col-4 d-flex justify-content-end align-items-center">
+                                    <div class="form-check form-switch">
+                                        <div class="switch-container">
+                                            <input type="checkbox" class="form-check-input" id="id_landscape_{{ forloop.counter0 }}"  name="{{ form.landscape.name }}"value="{{ value }}"{% if value in existing_info.landscape %} checked {% endif %}>
+                                            <label class="custom-control-label" for="id_landscape_{{ forloop.counter0 }}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+
+                            </div>            
+                                
+                            <hr class="my-3">
+                            {% endfor %}
+                            <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                <button id="save-button4" type="submit" class="btn btn-primary mt-1 save-button" name="patient_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                    Save changes
+                                </button>
+                            </div>
+                        </div>   
+
+                        <!-- Amenities Content -->
+                        <div class="tab-pane fade" id="amenities-content">
+                            <!-- Content for Amenities section goes here -->
+                            <h2>Accommodation</h2>
+                            <h5 class='mt-3 mb-5 text-primary'>Amenities</h5>
+                            <br></br>       
+                            <div class="row">
+                                {% for group_name, amenities in group_amenities %}
+                                <div class="container">
+                                    <h6 class="group-header" data-toggle="collapse" data-target="#{{ group_name|slugify }}">
+                                        <i style="font-style: italic;">{{ group_name }}</i>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </h6>
+                                    <hr>
+                                
+                                    <div id="{{ group_name|slugify }}" class="collapse show">
+                                        {% for i, j in amenities %}
+                                        <div class="form-group row">
+                                            <div class="col-md-6">
+                                                <label for="{{ i }}" class="col-form-label">{{ i }}</label>
+                                            </div>
+                                
+                                            <div class="col-md-6 d-flex justify-content-end align-items-center">
+                                                <input type="range" class="form-range" id="{{ i }}" name="{{ i }}" min="1" max="5" step="1" value="{{ j }}">
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                
+                            </div>
+                            <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                <button id="save-button5" type="submit" class="btn btn-primary mt-1 save-button" name="patient_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                    Save changes
+                                </button>
+                            </div> 
+
+                        </div>
+
+                        <!-- Type Content -->
+                        <div class="tab-pane fade" id="type-content">
+                            <h2>Accommodation</h2>
+                            <h5 class='mt-3 mb-5 text-primary'>Type</h5>
+                            <br></br>
+                            <div class="container">
+
+                                {% for value, text in form.accommodation_type.field.choices %}
+                                <div class="form-group row">
+                                    <div class="col-8">
+                                        <label class="row custom-label">{{text}}</label>
+                                        <label class="row text-muted">
+                                            {% if text == 'Apartment' %}
+                                            Explore apartment-style accommodations
+                                            {% elif text == 'Bed and breakfast' %}
+                                            Discover cozy B&B stays
+                                            {% elif text == 'Hostel' %}
+                                            Explore hostel options
+                                            {% elif text == 'Hotel' %}
+                                            Experience a classic hotel stay
+                                            {% elif text == 'Loft' %}
+                                            Stay at a modern loft-style accommodation
+                                            {% elif text == 'Mansion' %}
+                                            Discover a luxury mansion
+                                            {% elif text == 'Ski resort' %}
+                                            Enjoy a ski resort
+                                            {% elif text == 'Spa-wellness center' %}
+                                            Relax at spa-inspired accommodations
+                                            {% endif %}
+                                        </label>
+                                    </div>
+
+                                    <div class="col-4 d-flex justify-content-end align-items-center">
+                                        <div class="form-check form-switch">
+                                            <div class="switch-container">
+                                                <input type="checkbox" class="form-check-input" id="id_accommodation_type_{{ forloop.counter0 }}"  name="{{ form.accommodation_type.name }}" value="{{ value }}"{% if value in existing_info.accommodation_type %} checked {% endif %}>
+                                                <label class="custom-control-label" for="id_accommodation_type_{{ forloop.counter0 }}"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>            
+                                    
+                                <hr class="my-3">
+                                {% endfor %}    
+                                
+                                <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                    <button id="save-button6" type="submit" class="btn btn-primary mt-1 save-button" name="patient_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                        Save changes
+                                    </button>
+                                </div>
+                            </div>   
+
+
+                        </div>
+
+                        <!-- Choices Content -->
+                        <div class="tab-pane fade" id="choices-content">
+                            <!-- Content for Type section goes here -->
+                            <h2>Accommodation</h2>
+                            <h5 class='mt-3 mb-4 text-primary'>Special choices</h5>
+                            <br></br>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label>Travelling with</label>
+                                    <div class="input-group">
+                                        <div class="input-group">
+                                            <!-- Radio Check - Male -->
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.travelling_with.id_for_label }}_1">
+                                                <span class="form-check">
+                                                    <input type="radio" class="form-check-input" name="{{ form.travelling_with.name }}" id="{{ form.travelling_with.id_for_label }}_1" value="Private" {% if form.travelling_with.value == 'Private' %}checked{% endif %}>
+                                                    <span class="form-check-label">Alone</span>
+                                                </span>
+                                            </label>
+                                        
+                                            <!-- Radio Check - Female -->
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.travelling_with.id_for_label }}_2">
+                                                <span class="form-check ">
+                                                    <input type="radio" class="form-check-input" name="{{ form.travelling_with.name }}" id="{{ form.travelling_with.id_for_label }}_2" value="Family_friendly" {% if form.travelling_with.value == 'Family_friendly' %}checked{% endif %}>
+                                                    <span class="form-check-label ">Family</span>
+                                                </span>
+                                            </label>
+                                        
+                                            <!-- Radio Check - Other -->
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.travelling_with.id_for_label }}_3">
+                                                <span class="form-check">
+                                                    <input type="radio" class="form-check-input" name="{{ form.travelling_with.name }}" id="{{ form.travelling_with.id_for_label }}_3" value="Large_group_friendly" {% if form.travelling_with.value == 'Large_group_friendly' %}checked{% endif %}>
+                                                    <span class="form-check-label">Group</span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>                         
+                                </div>
+                            </div>      
+                            <div class="row mt-4">
+                                <div class="form-group">
+                                    <label>Travelling with pet</label>
+                                    <div class="input-group">
+                                        <div class="input-group">
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.pet_friendly.id_for_label }}_1">
+                                                <span class="form-check">
+                                                    <input type="radio" class="form-check-input" name="{{ form.pet_friendly.name }}" id="{{ form.pet_friendly.id_for_label }}_1" value="No" {% if form.pet_friendly.value == 'No' %}checked{% endif %}>
+                                                    <span class="form-check-label">No</span>
+                                                </span>
+                                            </label>
+                                        
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.pet_friendly.id_for_label }}_2">
+                                                <span class="form-check ">
+                                                    <input type="radio" class="form-check-input" name="{{ form.pet_friendly.name }}" id="{{ form.pet_friendly.id_for_label }}_2" value="Pet_friendly" {% if form.pet_friendly.value == 'Pet_friendly' %}checked{% endif %}>
+                                                    <span class="form-check-label ">Yes</span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>                         
+                                </div>
+                            </div>      
+                            <div class="row mt-4">
+                                <div class="form-group">
+                                    <label>Working during the trip</label>
+                                    <div class="input-group">
+                                        <div class="input-group">
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.work_friendly.id_for_label }}_1">
+                                                <span class="form-check">
+                                                    <input type="radio" class="form-check-input" name="{{ form.work_friendly.name }}" id="{{ form.work_friendly.id_for_label }}_1" value="No" {% if form.work_friendly.value == 'No' %}checked{% endif %}>
+                                                    <span class="form-check-label">No</span>
+                                                </span>
+                                            </label>
+                                        
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.work_friendly.id_for_label }}_2">
+                                                <span class="form-check ">
+                                                    <input type="radio" class="form-check-input" name="{{ form.work_friendly.name }}" id="{{ form.work_friendly.id_for_label }}_2" value="Work_friendly" {% if form.work_friendly.value == 'Work_friendly' %}checked{% endif %}>
+                                                    <span class="form-check-label ">Yes</span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>                         
+                                </div>
+                            </div>      
+                            <div class="row mt-4">
+                                <div class="form-group">
+                                    <label>Accommodation preference</label>
+                                    <div class="input-group">
+                                        <div class="input-group">
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.budget_or_luxury.id_for_label }}_1">
+                                                <span class="form-check">
+                                                    <input type="radio" class="form-check-input" name="{{ form.budget_or_luxury.name }}" id="{{ form.budget_or_luxury.id_for_label }}_1" value="Budget_friendly" {% if form.budget_or_luxury.value == 'Budget_friendly' %}checked{% endif %}>
+                                                    <span class="form-check-label">Budget-friendly</span>
+                                                </span>
+                                            </label>
+                                        
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.budget_or_luxury.id_for_label }}_2">
+                                                <span class="form-check ">
+                                                    <input type="radio" class="form-check-input" name="{{ form.budget_or_luxury.name }}" id="{{ form.budget_or_luxury.id_for_label }}_2" value="Luxury" {% if form.budget_or_luxury.value == 'Luxury' %}checked{% endif %}>
+                                                    <span class="form-check-label ">Luxury</span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>                         
+                                </div>
+                            </div>      
+                            <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                <button id="save-button7" type="submit" class="btn btn-primary mt-1 save-button" name="patient_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                    Save changes
+                                </button>
+                            </div>                      
+                        </div>
+                        <!-- Medical info Content -->
+                        <div class="tab-pane fade" id="medical-content">
+                            <!-- Content for medical info section goes here -->
+                            <h2>Medical</h2>
+                            <h5 class='mt-3 mb-4 text-primary'>Medical info</h5>
+                            <br></br>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label>Booking an appointment for children under 12</label>
+                                    <div class="input-group">
+                                        <div class="input-group">
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.children.id_for_label }}_1">
+                                                <span class="form-check">
+                                                    <input type="radio" class="form-check-input" name="{{ form.children.name }}" id="{{ form.children.id_for_label }}_1" value="No" {% if form.children.value == 'No' %}checked{% endif %}>
+                                                    <span class="form-check-label">No</span>
+                                                </span>
+                                            </label>
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.children.id_for_label }}_2">
+                                                <span class="form-check ">
+                                                    <input type="radio" class="form-check-input" name="{{ form.children.name }}" id="{{ form.children.id_for_label }}_2" value="UndertakesChildren" {% if form.children.value == 'UndertakesChildren' %}checked{% endif %}>
+                                                    <span class="form-check-label ">Yes</span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>                         
+                                </div>
+                            </div>      
+                            <div class="row mt-4">
+                                <div class="form-group">
+                                    <label>Accessible entrance needed</label>
+                                    <div class="input-group">
+                                        <div class="input-group">
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.accessibility.id_for_label }}_1">
+                                                <span class="form-check">
+                                                    <input type="radio" class="form-check-input" name="{{ form.accessibility.name }}" id="{{ form.accessibility.id_for_label }}_1" value="No" {% if form.accessibility.value == 'No' %}checked{% endif %}>
+                                                    <span class="form-check-label">No</span>
+                                                </span>
+                                            </label>
+                                        
+                                            <label class="form-control form-height d-flex align-content-center flex-wrap" for="{{ form.accessibility.id_for_label }}_2">
+                                                <span class="form-check ">
+                                                    <input type="radio" class="form-check-input" name="{{ form.accessibility.name }}" id="{{ form.accessibility.id_for_label }}_2" value="Accessible" {% if form.accessibility.value == 'Accessible' %}checked{% endif %}>
+                                                    <span class="form-check-label ">Yes</span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>                         
+                                </div>
+                            </div>      
+                            <div class="row mt-4 d-flex align-items-end flex-column mr-1">
+                                <button id="save-button8" type="submit" class="btn btn-primary mt-1 save-button" name="patient_btn" style="height:45px; width:155px; border-radius:6px; font-size: 18px;">
+                                    Save changes
+                                </button>
+                            </div>
+                        </div>
+                        <div id="errorMessages" class="d-flex align-items-end flex-column form-row h6 text-danger mt-3 px-4"></div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $("#patient-form").submit(function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            var $form = $(this); // Get the form
+    
+            var $saveButton = $form.find(".save-button");
+            var originalText = $saveButton.text();
+            
+            // Clear any previous error messages
+            $("#errorMessages").empty();
+
+    
+            // Add a loading spinner
+            $saveButton.prop("disabled", true); // Disable the button
+            $saveButton.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
+            $.ajax({
+                url: $form.attr("action"),
+                type: $form.attr("method"),
+                data: $form.serialize(),
+                success: function(data) {
+                    console.log(data);
+                    if (data.success === true) {
+                        console.log("Data was successful");
+                        // Change the button's text and color to indicate success
+                        $saveButton.text("Saved");
+                        $saveButton.css({"background-color": "green", "color": "white"});
+
+                        // Revert the button's text and color after 3 seconds
+                        setTimeout(function() {
+                            $saveButton.prop("disabled", false); // Enable the button     
+                            $saveButton.text('Save changes');
+                            $saveButton.css({"background-color": "", "color": ""});
+                        }, 3000); //
+                    } else {
+                        // Code to handle the case when data.success is not true
+                        console.log("Data was not successful");
+                        console.log(data.errors);
+            
+                        // Parse the errors string into a JavaScript object
+                        var errorsObject = JSON.parse(data.errors);
+            
+                        // Loop through the errors object and display error messages
+                        for (var fieldName in errorsObject) {
+                            if (errorsObject.hasOwnProperty(fieldName)) {
+                                var errorMessages = errorsObject[fieldName];
+            
+                                // Append each error message to the error message container
+                                for (var i = 0; i < errorMessages.length; i++) {
+                                    $("#errorMessages").append("<div class='error-message'>" + errorMessages[i].message + "</div>");
+                                }
+                            }
+                        }
+            
+                        // Revert the button's text and color on error
+                        $saveButton.prop("disabled", false); 
+                        $saveButton.text('Save changes');
+                        $saveButton.css({"background-color": "", "color": ""});
+                    }
+                },
+            });
+            
+        });
+    
+        // Bind the click event to buttons with the "save-button" class
+        $(".save-button").click(function() {
+            // Submit the form when a button is clicked
+            $("#patient-form").submit();
+        });
+    });
+    
+</script>
+
+</html>
+
+{% endblock %}

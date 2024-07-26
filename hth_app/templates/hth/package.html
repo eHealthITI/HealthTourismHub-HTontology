@@ -1,0 +1,661 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* Styling the carousel */
+
+      .carousel-slide-item img {
+        width: 100%;
+        height: 700px;
+        border-radius: 15px;
+      }
+      
+      .splide__slide {
+        opacity: 0.7;
+      }
+
+      .splide__slide.is-active {
+        opacity: 1;
+      }
+      #thumbnail-carousel .splide__slide {
+        border-radius: 15px;
+        overflow: hidden;
+      }
+      #thumbnail-carousel .splide__slide.is-active {
+        border: 5px solid #445ae9;
+      }
+      /* Add the following CSS rule for blue arrows */
+      .splide__arrow {
+        background-color: #445ae9;
+        opacity: 0.7;
+
+          }
+      .splide__arrow svg {
+        fill: white;
+      }
+      .nav-pills .nav-link {
+        text-align: center;
+        color: #5143d9;
+        border-radius: 10px;
+      }
+
+      .nav-pills .nav-link.active {
+        background-color:#5143d9; /* Light blue background for active item */
+        color: white; /* White text for active item */
+      }
+      {% comment %} .book-button {
+      background-color:#5143d9; 
+        color: white;
+      } {% endcomment %}
+      .leaflet-container {
+        height: 400px;
+        width: 100%%;
+        max-width: 100%;
+        max-height: 100%;
+      }
+    </style>
+  <body>
+    <div class="container mt-4">
+      <div class="row ml-1">
+          <div class="col-8">
+            <h2 class="font-weight-bold mt-3">{{details.title}}</h2>
+          </div>
+          {% comment %} <div class="col-4 text-right">
+            <button type="button" class="btn btn-outline-secondary">
+              <i class="fas fa-heart"></i>
+            </button>
+          </div> {% endcomment %}
+        </div>
+      <div class="row ml-1">
+        <div class="col-12">
+          <p  class="lead" style="font-size:18px;">{{ days|add:1 }} days/ {{days}} nights <i class="bi bi-dot"></i> {{ people }} people <i class="bi bi-dot"></i> {{details.type}}</p>
+        </div>
+      </div>
+    
+      
+      <div class="w-100 align-items-center justify-content-center mt-4">
+        <div id="main-carousel" class="splide">
+          <div class="splide__track">
+            <ul class="splide__list">
+              <li class="splide__slide">
+                <div class="carousel-slide-item">
+                  <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Image 1">
+                </div>
+              </li>
+              <li class="splide__slide">
+                <div class="carousel-slide-item">
+                  <img src="https://images.unsplash.com/photo-1595410608807-2700c508187c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=874&q=80" alt="Image 2">
+                </div>
+              </li>
+              <li class="splide__slide">
+                <div class="carousel-slide-item">
+                  <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Image 3">
+                </div>
+              </li>
+              <li class="splide__slide">
+                <div class="carousel-slide-item">
+                  <img src="https://images.unsplash.com/photo-1679939153959-a4496fd7d99f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Image 4">
+                </div>
+              </li>
+              <li class="splide__slide">
+                <div class="carousel-slide-item">
+                  <img src="https://images.unsplash.com/photo-1566371486490-560ded23b5e4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Image 5">
+                </div>
+              </li>
+              <li class="splide__slide">
+                <div class="carousel-slide-item">
+                  <img src="https://images.unsplash.com/photo-1602088113235-229c19758e9f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=867&q=80" alt="Image 6">
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+    
+        <div id="thumbnail-carousel" class="mt-4 splide">
+          <div class="splide__track">
+            <ul class="splide__list">
+              <li class="splide__slide">
+                <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Thumbnail 1">
+              </li>
+              <li class="splide__slide">
+                <img src="https://images.unsplash.com/photo-1595410608807-2700c508187c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=874&q=80" alt="Thumbnail 2">
+              </li>
+              <li class="splide__slide">
+                <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Thumbnail 3">
+              </li>
+              <li class="splide__slide">
+                <img src="https://images.unsplash.com/photo-1679939153959-a4496fd7d99f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Thumbnail 4">
+              </li>
+              <li class="splide__slide">
+                <img src="https://images.unsplash.com/photo-1566371486490-560ded23b5e4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Thumbnail 5">
+              </li>
+              <li class="splide__slide">
+                <img src="https://images.unsplash.com/photo-1602088113235-229c19758e9f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=867&q=80" alt="Thumbnail 6">
+              </li>
+            </ul>
+          </div>
+        </div>
+    </div>
+
+    <br></br> 
+
+      
+    <div style="background-color:#edecfa; border-radius: 10px;">
+    <ul class="nav nav-pills nav-fill p-2 w-100">
+      <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="pill" href="#overview">Overview</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="pill" href="#medical">Medical info</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="pill" href="#accommodation">Accommodation info</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="pill" href="#activities">Activities</a>
+      </li>
+    </ul>
+    </div>
+    <div class="container mt-5">
+        <div class="row mt-2">
+          <div class="tab-content col-lg-8 col-md-12" >
+            <div class="tab-pane fade show active" id="overview">
+              <h1>Overview</h1>
+              <hr class="my-4 border-secondary opacity-25">
+              <div class="w-100">
+                <p class="mb-4 lead h6 text-muted" style="font-size: 16.5px;text-align:justify;">Known as Greece's "co-capital," Thessaloniki is a captivating destination that blends history, culture, and vibrant city life. It is the capital of Central Macedonia and it is known for its natural beauty and rich historical importance.<br>
+                  Thessaloniki has a rich past which dates back over 2,300 years and history lovers will encounter magnificent remnants of the Byzantine, Ottoman, and Roman eras. The White Tower is an iconic symbol of the city and it stands as a distinguished landmark of Thessaloniki representing the sole surviving remnant of the once-demolished Ottoman fortifications that surrounded the city.<br>
+                  The city pulses with energy, thanks to its lively markets, vibrant nightlife, and welcoming locals and it is filled with cafes, boutiques, and stunning neoclassical buildings.<br>
+                  Art and culture thrive in Thessaloniki, with a plethora of museums, galleries, and theaters to explore while the city's local cousine will transport you to a world of gastronomic bliss.<br>
+                  Thessaloniki's warm climate and Mediterranean charm make it a year-round destination for tourists that seek a delightful escape. Discover the magic of this city and create memories that will last a lifetime. Book your trip to Thessaloniki now and let the adventure begin!</p>
+              </div>
+              <h4>Package basic info</h4>
+              <ul class="list-group list-unstyled mt-3">
+                <li>
+                  <span class="h6">Duration:</span>
+                  <span class="h6 fw-light">{{ days|add:1 }} Days, {{days}} Nights</span>
+                </li>
+                <li class="mt-1">
+                  <span class="h6">Neighborhood:</span>
+                  <span class="h6 fw-light">{{neighborhood|join:", " }}</span>
+                </li>
+                <li class="mt-1">
+                  <span class="h6">People:</span>
+                  <span class="h6 fw-light "> {{ people }} adults</span>
+                </li>
+                <li class="mt-1">
+                  <span class="h6">Distance:</span>
+                  <span class="h6 fw-light">Only {{details.distance}} from each other</span>
+                </li>
+                <li class="mt-1 mb-4">
+                  <span class="h6">Accommodation type:</span>
+                  <span class="h6 fw-light">{{details.type}}</span>
+                </li>
+              </ul>
+              <h4>Map</h4>
+              <div id='map1' class='mt-3'></div>
+
+            </div>
+            <div class="tab-pane fade" id="medical">
+              <h1>Medical info</h1>
+              <hr class="my-4 border-secondary opacity-25">
+              <div class="w-100">
+                <p class="mb-4 lead h6 text-muted" style="font-size: 16.5px;text-align:justify;">
+                  Dr. Emily Carter is a highly respected and board-certified cardiologist with a passion for 
+                  improving heart health and enhancing the quality of life for her patients. With over 15 years of 
+                  experience in the field, she has become a trusted expert in cardiovascular medicine. <br>
+                  Dr. Emily Carter's commitment to cardiovascular health, combined with her extensive medical expertise and genuine 
+                  care for her patients, makes her a leading figure in the field of cardiology. Her dedication to advancing the field and improving the lives
+                  of those she serves has earned her the respect and admiration of both colleagues and patients alike.<br>
+                </p>
+              </div>
+              <h4>Specialties</h4>
+              <p class="mb-4 lead h6 text-muted" style="font-size: 16.5px;">
+                Dr. {{details.medical_expert}} offers a comprehensive range of medical services within their specialty, with a focus on the following areas:                  
+              </p>
+              {% for field in specialties_list %}
+              <li class="mt-1" style="list-style-type: none;">
+                <span class="h6 fw-light"><i class="fas fa-solid fa-square-plus" style="color: #DC3545; font-size:18px;"></i> {{field}}</span>
+              </li>
+              {% endfor %}
+              <h4 class="mt-4">Offerings</h4>
+              <li class="mt-1" style="list-style-type: none;">
+                {% if offerings.0 %}
+                    <i class="fas fa-check" style="color: #28A745;"></i>
+                {% else %}
+                    <i class="fas fa-xmark fa-lg" style="color: #dc3545;"></i>&nbsp;
+                {% endif %}Accessible entrance</span>
+              </li>
+              <li class="mt-1" style="list-style-type: none;">
+                {% if offerings.1 %}
+                    <i class="fas fa-check" style="color: #28A745;"></i>
+                {% else %}
+                    <i class="fas fa-xmark fa-lg" style="color: #dc3545;"></i>&nbsp;
+                {% endif %} Video consultation</span>
+              </li>
+              <li class="mt-1" style="list-style-type: none;">
+                {% if offerings.2 %}
+                    <i class="fas fa-check" style="color: #28A745;"></i>
+                {% else %}
+                    <i class="fas fa-xmark fa-lg" style="color: #dc3545;"></i>&nbsp;
+                {% endif %} Undertakes children</span>
+              </li>
+              <h4 class='mt-4'>Map</h4>
+              <p class="mb-4 lead h6 text-muted" style="font-size: 19px;">
+                <span class="h6 fw-light"><i class="fas fa-solid fa-location-dot" style="color: #F5733;;font-size: 19px;"></i>  {{ medical_expert_address }} </span>
+              </p>
+              <div id='map2' class='mt-3'></div>
+            </div>
+            <div class="tab-pane fade" id="accommodation">
+                <h1>Accommodation info</h1>
+                <hr class="my-4 border-secondary opacity-25">
+                <div class="w-100">
+                  <p class="mb-4 lead h6 text-muted" style="font-size: 16.5px;text-align:justify;">{{info}}</p>
+                </div>
+                <h4 class="mb-4">Accommodation feautures</h4>
+                <ul class="list-group list-unstyled mt-3">
+                  <li>
+                    <span class="h6">Stars:</span>
+                    <span class="h6 fw-light">
+                      {% for star in rating %}
+                        {% if star == "full" %}
+                          <i class="fas fa-star" style="color: #ffcc00;"></i>
+                        {% elif star == 'half' %}
+                          <i class="fas fa-star-half-alt" style="color: #ffcc00;"></i> 
+                        {% elif star == 'empty' %}
+                          <i class="fa-regular fa-star" style="color: #ffcc00;"></i> 
+                        {% endif %}
+                      {% endfor %}              
+                    </span>                  
+                 </li>
+                  <li class="mt-1">
+                    <span class="h6">Languages:</span>
+                    <span class="h6 fw-light ">{{ languages|join:", " }}</span>
+                  </li>
+                  <li class="mt-1">
+                    <span class="h6">Accommodation type:</span>
+                    <span class="h6 fw-light ">{{details.type}}</span>
+                  </li>
+                  <li class="mt-1 mb-4">
+                    <span class="h6">Category:</span>
+                    <span class="h6 fw-light ">{{types|join:", " }}</span>
+                  </li>
+                </ul>
+                
+                <h4 class="mb-4">Your room</h4>
+                <ul class="list-group list-unstyled mt-3">
+                  <li>
+                    <span class="h6">Size in sqft:</span>
+                    <span class="h6 fw-light">{{room_info.1}} sqft</span>
+                  </li>
+                  <li class="mt-1">
+                    <span class="h6">Capacity:</span>
+                    <span class="h6 fw-light ">Sleeps {{room_info.0}}  people</span>
+                  </li>
+                  <li class="mt-1 mb-4">
+                    <span class="h6">Highlight:</span>
+                    <span class="h6 fw-light">{{room_info.2}} </span>
+                  </li>
+                </ul>
+                <h4>Offerings</h4>
+                <div class="mt-4">
+                  <i class="text-muted">Accommodation amenities </i>
+                </div>
+
+                    <div class="row mt-2">
+                      <div class="col-md-6 ">
+                        {% for category, elements in amenities %}
+                            {% if forloop.counter <=  length %}
+                            <div class="row mt-4"> 
+                              <div class="col-1">     
+                                {% if category == "Accessibility" %}
+                                        <i class="fas fa-wheelchair-move fa-lg" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i>
+                                {% elif category == "Facilities" %}
+                                        <i class="fas fa-house fa-lg" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;" ></i> 
+                                {% elif category == "Pets" %}
+                                        <i class="fas fa-house fa-lg" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i> 
+                                {% elif category == "Food and drink" %}
+                                        <i class="fas fa-utensils fa-lg" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i> 
+                                {% elif category == "Services" %}
+                                        <i class="fas fa-bell-concierge fa-lg" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i>
+                                {% elif category == "Working away" %}
+                                        <i class="fas fa-laptop" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i> 
+                                {% elif category == "Things to do" %}
+                                        <i class="fas fa-spa" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i> 
+                                {% elif category == "Location highlights" %}
+                                        <i class="fas fa-magnifying-glass-location fa-lg" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i> 
+                                {% endif %}                              
+                              </div>
+
+                              <div class="col-11">
+                                  <p style="font-weight:230; font-family:'Manrope';color:#EEA243;">{{elements|join:", " }}</p>
+                              </div>
+                            </div>
+
+                            {% endif %}
+
+                        {% endfor %}
+                      </div>
+                      <div class="col-md-6">
+                        {% for category, elements in amenities %}
+                          {% if forloop.counter >  length %}
+                            
+                          <div class="row mt-4">
+                            <div class="col-1">     
+                              {% if category == "Accessibility" %}
+                                      <i class="fas fa-wheelchair-move fa-lg" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i>
+                              {% elif category == "Facilities" %}
+                                      <i class="fas fa-house fa-lg" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;" ></i> 
+                              {% elif category == "Pets" %}
+                                      <i class="fas fa-house fa-lg" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i> 
+                              {% elif category == "Food and drink" %}
+                                      <i class="fas fa-utensils fa-lg" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i> 
+                              {% elif category == "Services" %}
+                                      <i class="fas fa-bell-concierge fa-lg" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i>
+                              {% elif category == "Working away" %}
+                                      <i class="fas fa-laptop" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i> 
+                              {% elif category == "Things to do" %}
+                                      <i class="fas fa-spa" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i> 
+                              {% elif category == "Location highlights" %}
+                                      <i class="fas fa-magnifying-glass-location fa-lg" style="color:#EEA243;text-shadow: 0 0 2px #f2b972;"></i> 
+                              {% endif %}
+                            </div>
+
+                            <div class="col-11">
+                              <p style="font-weight:230; font-family:'Manrope';color:#EEA243;">{{elements|join:", " }}</p>
+                            </div>
+                            </div>
+                              {% endif %}
+                            {% endfor %}
+                      </div>
+                  </div>
+              
+                  <hr class="bg-danger border-2 border-top" />
+
+                  <div>
+                    <i class="text-muted">Room amenities </i>
+                  </div>
+                  <div class="row mt-2">
+                      <div class="col-md-6 ">
+                            {% for category, elements in room_amenities %}
+                                {% if forloop.counter <=  room_amenities_length %}
+                                    
+                                  <div class="row mt-4">
+                                    <div class="col-1">     
+                                      {% if category == "Bathroom" %}
+                                              <i class="fas fa-shower fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i>
+                                      {% elif category == "Connection" %}
+                                              <i class="fas fa-wifi" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;" ></i> 
+                                      {% elif category == "Pets" %}
+                                              <i class="fas fa-dog fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i> 
+                                      {% elif category == "Entertainment" %}
+                                              <i class="fas fa-tv " style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i> 
+                                      {% elif category == "Food" %}
+                                              <i class="fas fa-mug-hot fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i>
+                                      {% elif category == "Home comforts" %}
+                                              <i class="fas fa-snowflake fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i> 
+                                      {% elif category == "More" %}
+                                              <i class="fas fa-hand-sparkles fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i>
+                                      {% elif category == "Sleeping" %}
+                                              <i class="fas fa-bed" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i>
+                                      {% elif category == "Things to enjoy" %}
+                                              <i class="fas fa-fan fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i>
+                                      {% elif category == "Working" %}
+                                              <i class="fas fa-briefcase fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i>
+                                      {% endif %}
+
+                                    </div>
+      
+                                    <div class="col-11">
+                                        <p style="font-weight:230; font-family:'Manrope';color:#7b73da;">{{elements|join:", " }}</p>
+                                    </div>
+                                  </div>
+    
+                                {% endif %}
+
+                            {% endfor %}
+                      </div>
+                      <div class="col-md-6">
+                        {% for category, elements in room_amenities %}
+                          {% if forloop.counter >  room_amenities_length %}
+                          <div class="row mt-4">
+                            <div class="col-1">     
+                              {% if category == "Bathroom" %}
+                                      <i class="fas fa-shower fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i>
+                              {% elif category == "Connection" %}
+                                      <i class="fas fa-wifi" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;" ></i> 
+                              {% elif category == "Pets" %}
+                                      <i class="fas fa-dog fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i> 
+                              {% elif category == "Entertainment" %}
+                                      <i class="fas fa-tv" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i> 
+                              {% elif category == "Food" %}
+                                      <i class="fas fa-mug-hot fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i>
+                              {% elif category == "Home comforts" %}
+                                      <i class="fas fa-snowflake fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i> 
+                              {% elif category == "More" %}
+                                      <i class="fas fa-hand-sparkles fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i>
+                              {% elif category == "Sleeping" %}
+                                      <i class="fas fa-bed" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i>
+                              {% elif category == "Things to enjoy" %}
+                                      <i class="fas fa-fan fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i>
+                              {% elif category == "Working" %}
+                                      <i class="fas fa-briefcase fa-lg" style="color:#7b73da;text-shadow: 0 0 2px #b4afea;"></i>
+                              {% endif %}
+
+                            </div>
+
+                            <div class="col-11">
+                                <p style="font-weight:230; font-family:'Manrope';color:#7b73da;">{{elements|join:", " }}</p>
+                            </div>
+                          </div>
+
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                  </div>
+                <h4 class="mt-4">Map</h4>
+                <p class="mb-4 lead h6 text-muted" style="font-size: 19px;">
+                  <span class="h6 fw-light"><i class="fas fa-solid fa-location-dot" style="color: #F5733;;font-size: 19px;"></i> {{ accommodation_address }}</span>
+                </p>
+                <div id='map3' class='mt-3'></div>     
+              
+            </div>
+            <div class="tab-pane fade" id="activities">
+              <h1>Activities</h1>
+              <hr class="my-4 border-secondary opacity-25">
+              <div class="w-100">
+                <p class="mb-2 lead h6 text-muted" style="font-size: 16.5px;">
+                  Exploring Thessaloniki can be an exciting experience. We recommend these activities to make your visit special and memorable:
+                </p>
+                {% for category, places in categorized_activities.items %}
+                <h6 class="group-header mt-4" data-bs-toggle="collapse" data-bs-target="#{{ category|slugify }}">
+                  <i style="font-style: italic;">{{ category }}</i>
+                  <i class="fas fa-chevron-down"></i>
+                </h6>
+
+                <div id="{{ category|slugify }}" class="collapse show"> 
+
+                  {% for i in places %}
+
+                    <ul style="list-style-type: none; padding: 0;">
+                      <li style="font-weight:280; font-family:'Manrope';color:#EEA243;" class="my-2"><i class="bi bi-dot"></i>{{i.0}}                      <i class="bi bi-dot"></i></li>
+                      
+                      <p class="lead h6 text-muted" style="font-size: 16.5px;">   {{ i.1 }}   </p>
+                      {% if i.2 != "None" %}
+                      <li class="h6 mt-4">More information here: <a href="{{ i.2 }}" target="_blank" style=" font-family:'Manrope';color:#7b73da;">{{ i.2 }}</a></li>
+                      {% endif %}
+                      <li class"mt-4" style="font-size: 17px"><i class="fas fa-map-marker-alt"></i> {{ i.4 }}</li>
+                      <br>
+
+                    </ul>
+
+                  {% endfor %}
+                </div>
+                <hr style="color: #EEA243;" />
+
+                {% endfor %}
+              </div>
+
+              {% comment %} <div class="container">
+                {% for item in activities_list %}
+                <div class="mb-3">
+                  <h5>
+                    <i class="fa fa-check text-success"></i> {{ item.0 }}
+                  </h5>
+                  <p><a href="{{ item.2 }}">{{ item.2 }}</a></p>
+                  <p class="mb-4 lead h6 text-muted" style="font-size: 16.5px;">{{ item.1 }}</p>
+                </div>
+                {% endfor %}
+              </div> {% endcomment %}
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-12">
+            <br></br>
+            <div class="card p-2" style="border-radius: 16px; border: 1px solid #41bfa9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+              <div class="card-body px-3">
+                <h4 class="card-title">{{details.title}}</h4>
+                <br>
+                <ul class="list-unstyled" style="font-weight:200; font-family:'Manrope';font-size: 15px;color:#5c8a8a;">
+                  <li><i class="fas fa-user-md"></i>&nbsp; Medical appointment with {{details.medical_expert}}</li>
+                  <li class="mt-3"><i class="fas fa-hotel"></i>&nbsp; Stay at the {{details.accommodation_provider}} {{details.type}}</li>
+                  <li class="mt-3"><i class="fas fa-globe"></i>&nbsp; Exploration near {{exploration}}</li>
+                </ul>
+                <p class="lead mt-2">Total: <span style="color:#41bfa9; font-size: 35px;">€{{details.price}}</span></p>
+                <a href="{% url 'hth_app:review_and_pay' %}" class="btn btn-primary shadow" style="font-weight:500;width: 160px; height:40px; border-radius: 16px;">Book now</a>
+              </div>
+            </div>      
+            
+          
+          </div>
+        </div>
+    </div>
+    <br></br> 
+    
+  </body>
+  <script>
+    // Carousel script
+    document.addEventListener('DOMContentLoaded', function() {
+      const mainCarousel = new Splide('#main-carousel', {
+        type: 'fade',
+        height: '700px',
+        arrows: false,
+        cover: true,
+        pagination: false, // Remove pagination dots
+
+      }).mount();
+
+      const thumbnailCarousel = new Splide('#thumbnail-carousel', {
+        perPage: 5.2,
+        perMove: 1,
+        gap: '20px',
+        height: '130px' ,
+        pagination: false,
+        breakpoints: {
+          600: {
+            perPage: 2,
+          }
+        },
+        focus: 'center',
+        isNavigation: true,
+        updateOnMove: true,
+        cover: true,
+      }).mount();
+
+      thumbnailCarousel.on('click', function (slide) {
+        mainCarousel.go(slide.index);
+      });
+      thumbnailCarousel.on('moved', function (newIndex) {
+        mainCarousel.go(newIndex);
+      });
+    });
+
+    // Map script
+    // Create map1
+    const map1 = L.map('map1').setView({{coords.0}}, 11);
+    const tiles1 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map1);
+
+    // Create map2
+    const map2 = L.map('map2').setView({{coords.0}}, 12);
+    const tiles2 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map2);
+
+     // Create map3
+     const map3 = L.map('map3').setView({{coords.1}}, 12);
+     const tiles3 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+         maxZoom: 19,
+         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+     }).addTo(map3);
+
+    const pointsData = {{coords}};
+
+    function initializeMaps() {
+        pointsData.forEach((point, index) => {
+
+            const lat = parseFloat(point[0]);
+            const lng = parseFloat(point[1]);
+
+            // Create markers for each point on both maps
+            const marker1 = L.marker([lat, lng]).addTo(map1);
+            const marker2 = L.marker([lat, lng]).addTo(map2);
+            const marker3 = L.marker([lat, lng]).addTo(map3);
+
+            // Check if it's the first loop
+            if (index === 0) {
+              marker1.bindPopup("{{ details.medical_expert }}");
+              marker2.bindTooltip("{{ details.medical_expert }}").openTooltip();
+              marker3.bindPopup("{{ details.medical_expert }}");
+
+
+            } else if (index === 1) {
+              marker1.bindPopup(`{{ details.accommodation_provider }}`);
+              marker2.bindPopup(`{{ details.accommodation_provider }}`);
+              marker3.bindTooltip("{{ details.accommodation_provider }}").openTooltip();
+
+            }
+
+        });
+    }
+
+    // Initialize the maps when the page loads
+    initializeMaps();
+
+    // Listen for tab activation events and refresh the map when a tab is shown
+    $('a[data-bs-toggle="pill"]').on('shown.bs.tab', function (e) {
+        const targetTab = $(e.target).attr('href'); // Get the href of the activated tab
+
+        // Refresh the corresponding map
+        if (targetTab === '#overview') {
+            map1.invalidateSize();
+        } else if (targetTab === '#medical') {
+            map2.invalidateSize();
+        } else if (targetTab === '#accommodation') {
+            map3.invalidateSize();
+      }
+    });
+   
+  </script>
+</html>
+
+{% endblock %}

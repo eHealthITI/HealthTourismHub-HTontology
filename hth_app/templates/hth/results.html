@@ -1,0 +1,548 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+  <!-- Google Fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Include noUiSlider CSS and JS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.js"></script>
+
+
+  <style>
+    .outline-blue {
+      outline: 2px solid blue;
+    }
+    .form-control-inline {
+      display: inline-block;
+      width: 100%;
+      border-radius: 0;
+      border: none;
+      border-bottom: 1px solid #bfbfbfdb;
+      padding: 3px;
+     }
+     .form-control-inline:disabled {
+      background-color: transparent !important; /* Set background color to transparent */
+      color: #000 !important; /* Set text color */
+  }
+     .label-with-icon {
+      font-size: 1rem;
+      font-weight: 530;
+
+    }
+    .label-with-icon i {
+      font-size: 1.3rem;
+      color: rgba(97, 97, 209, 0.636);
+      margin-right: 4px;
+
+    }
+    .blue-bg {
+      background-color: #071957;
+      height: 300px;
+    }
+    .dropdown-item:hover {
+      background-color: #cfd7f3;
+      color: grey;
+    }
+    .custom-text {
+      font-size: smaller;
+      color: #777;
+      vertical-align: top;
+    }
+    .rounded-button {
+      border-radius: 15px;
+      width: 140px;
+    }
+    .dropdown-menu {
+      width: 100%;
+      min-width: inherit;
+      padding: 0;
+    }
+    .custom-card-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .custom-card-title {
+      color: black; /* Initial color of the title */
+      transition: color 0.3s ease; /* Add a smooth transition effect */
+    }
+
+    .custom-card:hover {
+      transform: translateY(-2px); /* Move the card up on hover */
+    }
+
+    .custom-card:hover .custom-card-title {
+      color: blue; /* Color of the title on hover */
+    }
+    .custom-card {
+      border-radius: 30px; /* Increase the border-radius value for more rounding */
+      overflow: hidden; /* Ensures the image fits within the rounded borders */
+      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+    }
+
+    .date-icon {
+      font-size: 14px; /* Adjust the font size for a smaller icon */
+      color: #6c757d; /* Grey muted color */
+    }
+    .duration-badge-overlay {
+        position: absolute;
+        top: 180px;
+        left: 20px;
+        background-color: white;
+        color: black;
+        padding: 4px 10px;
+        font-size: 15px; /* Adjust the font size to make the badge smaller */
+        border-radius: 10px;
+      }
+    .medical-icon,
+    .hotel-icon {
+      font-size: 18px; /* Adjust the font size for the medical and hotel icons */
+      color: #6c757d; /* Grey muted color */
+    }
+    .provider-name,
+    .hotel-name {
+      font-size: 14px; /* Adjust the font size for the medical-expert and hotel names */
+      font-weight: bold;
+    }
+    .extra-info {
+      font-size: 12.5px; /* Adjust the font size for the certification and apartment type */
+      color: #17A2B8; 
+      font-family:'Manrope'
+    }
+    .green {
+      color: #00cc00;
+      font-weight: bold;
+      margin-right: 10px;
+      font-size:28px;
+    }
+    .custom-disabled-input  {
+        background-color: transparent; /* Set background color to transparent */
+        color: #000; /* Set text color */
+        border: 1px solid #ced4da; /* Add a border for visual distinction (optional) */
+      }
+    .star-label {
+        display: inline-block;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .star-label input {
+        display: none; /* Hide the actual checkbox */
+    }
+
+    .star-label.active {
+        color: #cfd7f3;
+    }
+    /* Customize the slider container */
+    .noUi-base {
+      background-color: transparent; /* Remove the default background color */
+      border: none; /* Remove the default border */
+    }
+
+    /* Customize the connect bar (active part of the slider) */
+    .noUi-connect {
+      background-color: #007BFF; /* Bootstrap's primary color for the active part */
+    }
+
+    /* Customize the inactive part of the slider */
+    .noUi-origin {
+      background-color: #ddd; /* Light gray color for the inactive part */
+    }
+
+    /* Customize the handler shape */
+    .noUi-handle {
+      height: 18px !important;
+      width: 18px!important;
+      border: 2px solid #007BFF; /* Bootstrap's primary color for the handler border */
+      border-radius: 9px; /* Make it circular */
+      cursor: pointer;
+      box-sizing: border-box; /* Include border in sizing calculations */
+      {% comment %} margin-bottom: 25px; {% endcomment %}
+      {% comment %} transform: scale(0.71) translateY(-5.1px); {% endcomment %}
+      box-shadow: none;
+
+    }
+    .noUi-handle::before,
+    .noUi-handle::after {
+        display: none;
+    }
+
+    </style>
+ 
+
+  </style>
+
+  <div class="blue-bg" style="position: relative; top: 100%;">
+    <div class="text-center p-5">
+      <h2 class="fw-bold text-white mt-3" style="font-family: 'Roboto'">Book complete health packages.</h2>
+      <h2 class="lead" style="font-weight:200; font-family:'Manrope';color:#838cab;">{{message}}</h2>
+    </div>
+    {% comment %} <div class="slider-styled" id="slider-round"></div> {% endcomment %}
+
+   <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+          <div class="card" style="border-radius: 20px;">
+              <div class="card-body">
+                <div class="row mt-3 px-4">
+                  <div class="col-12 col-md-6">
+                      <div class="d-flex justify-content-start">
+                          <label for="location" class="label-with-icon"><i class="fas fa-map-marker-alt"></i>  Location</label>
+                      </div>
+                      <input type="text" id="location-input" name="destination" class="form-control form-control-inline" placeholder="{{booking_data.destination}}" disabled>                     
+                   </div>
+                  <div class="col-12 col-md-6">
+                    <div class="d-flex justify-content-start">
+                      <label class="label-with-icon"><i class="fas fa-heartbeat"></i> Medical service</label>
+                   </div>
+                   <input type="text" id="" name="" class="form-control form-control-inline" placeholder="{{booking_data.medical_service}}" disabled>                     
+                  </div>
+                </div>
+                <div class="row align-items-center">
+                  
+                  <div class="col-md-12 mt-4">
+                    <div class="form-group">
+                      <button type="button" class="btn w-100 text-center ml-1 mr-1" style="background-color: #edecfa; color:#6055b7;font-family: 'Roboto', sans-serif; font-size: 16px;" data-bs-toggle="collapse" data-bs-target="#filters" aria-expanded="false" aria-controls="filters">
+                        <i class="fa-solid fa-arrow-down-wide-short"></i> Advanced Filters
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                  
+                <div id="filters" class="collapse container overflow-hidden">
+                  <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row justify-content-between">
+                      <div class="col">
+                        <div class="col card mt-3 mb-3">
+
+                          <div class="card-body">
+
+                            <h6 class="card-title">Room amenities</h6>
+                            <div style="height:185px;" class="w-100 container overflow-auto">
+                              {% for value, text in filters_form.room_amenities_basic.field.choices %}
+
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="id_room_amenities_basic_{{ forloop.counter0 }}" name="{{ filters_form.room_amenities_basic.name }}" value="{{ value }}"{% if value in filters_form.room_amenities_basic.value %}checked{% endif %}>
+                                <label class="form-check-label small" for="id_room_amenities_basic_{{ forloop.counter0 }}">
+                                {{text}}
+                                </label>
+                              </div>
+                              {% endfor %}                                  
+                            </div>
+
+                            <h6 class="card-title mt-5">Things to enjoy & entertainment</h6>
+                            <div style="height:145px;" class="w-100 container overflow-auto">
+                              {% for value, text in filters_form.room_amenities_entertainment.field.choices %}
+
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="id_room_amenities_entertainment_{{ forloop.counter0 }}" name="{{ filters_form.room_amenities_entertainment.name }}" value="{{ value }}"{% if value in filters_form.room_amenities_entertainment.value %}checked{% endif %}>
+                                <label class="form-check-label small" for="id_room_amenities_entertainment_{{ forloop.counter0 }}">
+                                {{text}}
+                                </label>
+                              </div>
+                              {% endfor %}                                   
+                            </div>
+                          </div>
+                          
+                        </div>
+                        <div class="col card mt-3 mb-3">
+
+                          <div class="card-body">
+                            <h6 class="card-title">Stars</h6>
+
+                            <div class="row text-center px-1">
+
+                              <div class="btn-group" role="group" aria-label="Stars">
+                                <label class="btn btn-outline-secondary star-label">
+                                    <input type="checkbox" name="stars" value="1"{% if '1' in selected_stars %}checked{% endif %}>1 <i class="fas fa-star"></i>
+                                </label>
+                                <label class="btn btn-outline-secondary star-label">
+                                    <input type="checkbox" name="stars" value="2"{% if '2' in selected_stars %}checked{% endif %}>2 <i class="fas fa-star"></i>
+                                </label>
+                                <label class="btn btn-outline-secondary star-label">
+                                    <input type="checkbox" name="stars" value="3"{% if '3' in selected_stars %}checked{% endif %}>3 <i class="fas fa-star"></i>
+                                </label>
+                                <label class="btn btn-outline-secondary star-label">
+                                    <input type="checkbox" name="stars" value="4"{% if '4' in selected_stars %}checked{% endif %}>4 <i class="fas fa-star"></i>
+                                </label>
+                                <label class="btn btn-outline-secondary star-label">
+                                    <input type="checkbox" name="stars" value="5"{% if '5' in selected_stars %}checked{% endif %}>5 <i class="fas fa-star"></i>
+                                </label>
+                              </div>
+                            </div>
+
+                          </div>
+                      </div>
+                      </div>  
+                      <div class="col">
+                        <div class="col card mt-3 mb-3">
+
+                          <div class="card-body">
+                            <h6 class="card-title">Adults</h6>
+                            <div class="input-group">
+                                  <div class="input-group-text"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                                    <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                                  </svg>
+
+                              </div>
+                              <input class="form-control form-control-sm" id="{{filters_form.adults.id_for_label}}" aria-describedby="" min="{{filters_form.adults.field.min_value}}" type="number" value="{% if filters_form.data.adults %}{{ filters_form.data.adults }}{% else %}{{ filters_form.adults.initial }}{% endif %}" name="adults">
+                            </div>
+                            <h6 class="card-title mt-3">Children</h6>
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="fa-solid fa-children"></i></div>
+                              <input class="form-control form-control-sm" id="{{filters_form.children.id_for_label}}" aria-describedby=""  min="{{filters_form.children.field.min_value}}" type="number" value="{% if filters_form.data.children %}{{ filters_form.data.children }}{% else %}{{ filters_form.children.initial }}{% endif %}" name="children">
+                            </div>
+                            <h6 class="card-title mt-3">Rooms</h6>
+                            <div class="input-group">
+                              <div class="input-group-text"><i class="fa-solid fa-bed fa-sm"></i></div>
+                              <input class="form-control form-control-sm" id="{{filters_form.rooms.id_for_label}}" aria-describedby="" min="{{filters_form.rooms.field.min_value}}" type="number" value="{% if filters_form.data.adroomslts %}{{ filters_form.data.rooms }}{% else %}{{ filters_form.rooms.initial }}{% endif %}" name="rooms">
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col card mt-3 mb-3">
+
+                          <div class="card-body">
+                            <h6 class="card-title">Price range</h6>
+                            <br>
+                            <div id="priceSlider" style="height:10px;width:94%;"> </div>
+                            <br>
+                        
+                            <div class="row gx-4 justify-content-between">
+                              <div class="col">                                  
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Min</span>
+                                  </div>
+                                  <input type="text" class="form-control" aria-label="Min Amount" placeholder="0" name="minPrice" id="minPrice">
+                                </div>
+                              </div>
+                              <div class="col">                                  
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Max</span>
+                                  </div>
+                                  <input type="text" class="form-control" aria-label="Max Amount" placeholder="1000" name="maxPrice" id="maxPrice">
+                                </div>
+                              </div>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col card mt-2 mb-3">
+
+                          <div class="card-body">
+                            <h6 class="card-title">Medical Experience</h6>
+
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                              <label class="form-check-label small" for="flexCheckDefault">
+                                Video consultation available
+                              </label>
+                            </div>                              
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                              <label class="form-check-label small" for="flexCheckDefault">
+                                Experienced medical experts
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                              <label class="form-check-label small" for="flexCheckDefault">
+                                Expertised in this service
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+
+
+                      </div>  
+                      <div class="col">
+
+                          <div class="col card mt-3 mb-3">
+
+                            <div class="card-body">
+                              <h6 class="card-title">Insurance</h6>
+                              <div style="height:175px;" class="w-100 container overflow-auto">
+                                {% for value, text in filters_form.insurance.field.choices %}
+
+                                <div class="form-check">
+                                  <input class="form-check-input" type="checkbox" id="id_insurance_{{ forloop.counter0 }}" name="{{ filters_form.insurance.name }}" value="{{ value }}"{% if value in filters_form.insurance.value %}checked{% endif %}>
+                                  <label class="form-check-label small" for="id_insurance_{{ forloop.counter0 }}">
+                                  {{text}}
+                                  </label>
+                                </div>
+                                {% endfor %}         
+                                
+                              </div>
+                          </div>
+                          
+                        </div>
+                        <div class="col card mt-3 mb-3">
+
+                          <div class="card-body">
+                            <h6 class="card-title">Languages</h6>
+                            <div style="height:165px;" class="w-100 container overflow-auto">
+                              {% for value, text in filters_form.languages.field.choices %}
+
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="id_languages_{{ forloop.counter0 }}" name="{{ filters_form.languages.name }}" value="{{ value }}"{% if value in filters_form.languages.value %}checked{% endif %}>
+                                <label class="form-check-label small" for="id_languages_{{ forloop.counter0 }}">
+                                {{text}}
+                                </label>
+                              </div>
+                              {% endfor %}    
+                            </div>
+                        </div>                                                      
+                      </div>  
+                      
+                      <button type="submit" class="btn mb-2 btn-primary w-100" style="font-size:16px;" name="apply_filters">Apply filters</button>
+                      <button class="btn w-100" style="background-color:#cfd7f3;font-size:16px;" name="clear_filters">Clear filters</button>
+
+                  </form>
+                </div>
+
+
+      
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      {% comment %} Results! {% endcomment %}
+      <div class="mt-3 container">
+        <div class="row">
+          <div class="d-flex justify-content-end text-end">
+            <div class="dropdown">
+              <button class="btn btn-light btn-lg rounded-button" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="custom-text">Best match</span>
+                <span class="custom-text bi bi-chevron-down"></span>
+              </button>
+              <div class="dropdown-menu"  aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Best match</a>
+                <a class="dropdown-item" href="#">Top rated</a>
+                <a class="dropdown-item" href="#">By price</a>
+                <!-- Add more options as needed -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 p-2 row card-container">
+          {% for package in packages_passed %}
+            <div class="col-lg-4 col-md-6 col-12 px-3 mb-4">
+              <div class="card custom-card d-flex flex-column h-100">
+                <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=725&q=80" class="card-img-top" alt="Image 3" style="height: 220px;">
+                <div class="duration-badge-overlay">{{ booking_data.days|add:1 }} days/ {{booking_data.days}} nights</div>
+      
+                <div class="card-body d-flex flex-column">
+                  <h5 class="custom-card-title">{{package.title}}</h5>
+                  <p><i class="bi bi-calendar3 date-icon"></i> <span class="text-muted">{{booking_data.date_range}}</span></p>
+                  <p>
+                    <span class="text-danger"  style="font-size: larger;"><i class="fa-solid fa-house-medical"></i></span>
+                    <span class="provider-name">{{package.medical_expert}}</span>
+                    <span class="extra-info">{{package.specialties}}</span>
+                    <span class="align-middle" style="font-size: larger;">
+                      <i class="bi bi-dot"></i>
+                    </span>
+                    <span class="text-warning"><i class="fa-solid fa-bed" style="font-size: larger;"></i></span>
+                    <span class="provider-name">{{package.accommodation_provider}}</span>
+                    <span class="extra-info">{{package.type}}</span>
+                    <span class="align-middle" style="font-size: larger;">
+                      <i class="bi bi-dot"></i>
+                    </span>
+                    <span class="text-muted" style="font-weight:200; font-family:'Manrope';font-size: 15px;color:#5c8a8a;">{{package.distance}} from each other</span>
+                  </p>
+                </div>
+
+                <div class="d-flex card-footer bg-transparent justify-content-between border-0">
+                  <p class="lead">Total: <span style="color:#41bfa9; font-size: 35px;">{{package.price}}€</span></p>
+                  <form method="post">
+                  {% csrf_token %}                   
+                  <button class="btn btn-primary shadow mt-2" style="font-weight:500; width: 140px; height:40px; border-radius: 16px;" name="details" value="{{ package }}"  formtarget="_blank">View details</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+
+
+        </div>
+
+
+      </div>
+      <br></br>
+
+
+
+  </div>
+  <script>
+    $(document).ready(function() {
+      $('#dropdownMenuButton').click(function() {
+        $(this).addClass('outline-blue');
+      });
+  
+      $('.dropdown-item').click(function() {
+        var selectedOption = $(this).text();
+        $('#dropdownMenuButton').html('<span class="custom-text">' + selectedOption + '</span> <span class="custom-text bi bi-chevron-down"></span>');
+      });
+  
+      $(document).click(function(event) {
+        if (!$(event.target).closest('.dropdown').length) {
+          $('#dropdownMenuButton').removeClass('outline-blue');
+        }
+      });
+      // Function to update the 'active' class based on the initial state of checkboxes
+      function updateActiveClass() {
+          $('.star-label input:checked').each(function () {
+              $(this).parent().addClass('active');
+          });
+      }
+
+      updateActiveClass();
+
+      $('.star-label input').on('change', function () {
+          $(this).parent().toggleClass('active', this.checked);
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var priceSlider = document.getElementById('priceSlider');
+      var minPriceInput = document.getElementById('minPrice');
+      var maxPriceInput = document.getElementById('maxPrice');
+
+      noUiSlider.create(priceSlider, {
+        start: [0, 1000],
+        connect: true,
+        range: {
+          'min': 0,
+          'max': 1000
+        },
+        
+      });
+
+      priceSlider.noUiSlider.on('update', function (values, handle) {
+        if (handle === 0) {
+          minPriceInput.value = values[handle];
+        } else {
+          maxPriceInput.value = values[handle];
+        }
+      });
+    });
+    
+  </script>
+</html>
+
+{% endblock %}
+

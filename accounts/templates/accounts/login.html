@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+
+
+</style>
+
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <div class="col-11 col-sm-9 col-md-7 col-lg-6 col-xl-5 col-xxl-4 p-0 mt-3 mb-2 px-15">        
+                                  
+                <form class="p-4 p-md-5" method="post">
+                    <h3 class="text-center"> Welcome back</h3>
+                    <p class="text-secondary text-center"> Login to your account. </p><br>
+                    {% csrf_token %}
+                    <div class="form-floating mb-3">
+                      <input class="form-control" id="{{form.email.id_for_label}}" name="username" placeholder="name@example.com" required>
+                      <label for="{{form.email.id_for_label}}">Email</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                      <input type="password" class="form-control" id="{{form.password.id_for_label}}" name="password" placeholder="Password" required>
+                      <label for="{{form.password.id_for_label}}">{{form.password.label}}</label>
+                    </div>
+                    {% if form.non_field_errors %}
+                      {% for error in form.non_field_errors %}
+                        <p class="text-danger">{{ error }}</p>
+                      {% endfor %}
+                    {% endif %}
+                    {% comment %} {% if form.errors %}
+                    <span class="error text-danger">Username or password not correct</span>
+                    {% endif %} {% endcomment %}
+                    <div class="checkbox mb-3">
+                      <label>
+                        <input type="checkbox" value="remember-me"> Remember me
+                      </label>
+                    </div>
+                    {% if request.GET.next %}
+                      <input type="hidden" name="next" value="{{ request.GET.next }}">
+                    {% endif %}
+                    <button class="w-100 btn btn-lg btn-primary" type="submit">Login</button>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p>Not a member? <a href="/signup/">Register</a></p>
+                    </div>
+                  </form>
+        </div>
+
+    </div>
+  </div>
+    
+
+</html>
+
+{% endblock %}
