@@ -67,5 +67,5 @@ docker-compose up --build
 ```
 
 > [!IMPORTANT]  
-> If you use the HT ontology in your work or project, please ensure to cite the following paper: [An Ontology-Based Booking Application for Personalized Packages in the Health Tourism Industry](https://www.mdpi.com/2071-1050/16/15/6505)
+> If you use the HT ontology in your work or project, please ensure to cite the following paper: [Enhancing Sustainability in Health Tourism through an Ontology-Based Booking Application for Personalized Packages](https://www.mdpi.com/2071-1050/16/15/6505)
 
